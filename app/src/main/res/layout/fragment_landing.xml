@@ -1,0 +1,50 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.triasbrata.foodhunter.LandingFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="490dp"
+        android:paddingLeft="44dp"
+        android:paddingRight="44dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="21dp"
+            >
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_button"
+                android:text="@string/try_app"
+                android:layout_gravity="start"
+                android:textSize="17dp"
+                android:textColor="@color/TextRed"
+                android:id="@+id/btnTryApp" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_button"
+                android:text="@string/log_in"
+                android:textColor="@color/TextRed"
+                android:id="@+id/btnLogIn"
+                android:textSize="17dp"
+                android:layout_gravity="end"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_button"
+            android:textColor="@color/TextBlue"
+            android:textSize="17dp"
+            android:id="@+id/btnLogInFb"
+            android:text="@string/log_in_fb"/>
+    </LinearLayout>
+</FrameLayout>

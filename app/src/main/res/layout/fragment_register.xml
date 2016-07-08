@@ -1,0 +1,94 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.triasbrata.foodhunter.RegisterFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="300dp"
+        android:paddingLeft="44dp"
+        android:paddingRight="44dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:background="@drawable/shape_text_field"
+            android:layout_marginBottom="21dp"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/underline_text"
+                android:textColor="@color/textDark"
+                android:id="@+id/txtUsername"
+                android:textColorHint="@color/textDarkHint"
+                android:hint="@string/username"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtPassword"
+                android:hint="@string/password"
+                android:background="@drawable/non_underline_text"
+                android:textColorHint="@color/textDarkHint"
+                android:textColor="@color/textDark"
+                android:inputType="textPassword" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:background="@drawable/shape_text_field"
+            android:layout_marginBottom="21dp"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/underline_text"
+                android:textColor="@color/textDark"
+                android:id="@+id/txtEmail"
+                android:textColorHint="@color/textDarkHint"
+                android:hint="@string/email"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtTownBase"
+                android:hint="@string/town_base"
+                android:background="@drawable/non_underline_text"
+                android:textColorHint="@color/textDarkHint"
+                android:textColor="@color/textDark"
+                android:inputType="textPassword" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="21dp"
+            >
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_button"
+                android:text="@string/btnBack"
+                android:layout_gravity="start"
+                android:textSize="17dp"
+                android:textColor="@color/textDark"
+                android:id="@+id/btnBack" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_button"
+                android:text="@string/register"
+                android:textColor="@color/TextRed"
+                android:id="@+id/btnRegister"
+                android:textSize="17dp"
+                android:layout_gravity="end"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+</FrameLayout>
