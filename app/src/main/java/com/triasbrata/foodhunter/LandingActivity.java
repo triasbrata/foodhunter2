@@ -1,7 +1,6 @@
 package com.triasbrata.foodhunter;
 
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
@@ -9,6 +8,10 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
+
+import com.triasbrata.foodhunter.fragment.LandingFragment;
+import com.triasbrata.foodhunter.fragment.LoginFragment;
+import com.triasbrata.foodhunter.fragment.RegisterFragment;
 
 public class LandingActivity extends FragmentActivity {
 

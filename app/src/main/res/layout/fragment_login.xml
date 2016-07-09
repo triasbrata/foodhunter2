@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:float="http://schemas.android.com/apk/res-auto"
-    tools:context="com.triasbrata.foodhunter.LoginFragment">
+    tools:context=".fragment.LoginFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
