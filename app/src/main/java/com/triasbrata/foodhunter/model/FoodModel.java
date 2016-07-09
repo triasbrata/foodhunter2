@@ -6,16 +6,16 @@ import android.graphics.Bitmap;
  * Created by triasbrata on 09/07/16.
  */
 public class FoodModel {
-    private Bitmap foodImage;
-    private String foodName,storeName,storeAdress,storeId;
-    private int foodPrice;
-    private boolean userLike;
 
-    public Bitmap getFoodImage() {
+    private String foodImage,foodName,storeName,storeAdress,storeId = "";
+    private int foodPrice = 0;
+    private boolean userLike = true;
+
+    public String getFoodImage() {
         return foodImage;
     }
 
-    public void setFoodImage(Bitmap foodImage) {
+    public void setFoodImage(String foodImage) {
         this.foodImage = foodImage;
     }
 
@@ -52,6 +52,7 @@ public class FoodModel {
     }
 
     public boolean isUserLike() {
+
         return userLike;
     }
 

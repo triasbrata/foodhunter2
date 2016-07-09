@@ -18,17 +18,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.JsonArray;
-import com.here.android.mpa.common.GeoCoordinate;
-import com.here.android.mpa.common.OnEngineInitListener;
-import com.here.android.mpa.mapping.Map;
-import com.here.android.mpa.mapping.MapFragment;
 
 import com.triasbrata.foodhunter.R;
 import com.triasbrata.foodhunter.adapter.FoodListAdapter;
+import com.triasbrata.foodhunter.etc.BitmapOperation;
 import com.triasbrata.foodhunter.etc.Config;
+import com.triasbrata.foodhunter.etc.imagefromurl.ImageLoader;
 import com.triasbrata.foodhunter.model.FoodModel;
 
 import org.json.JSONArray;
@@ -36,7 +32,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by triasbrata on 08/07/16.
@@ -46,7 +41,11 @@ public class SearchFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private RequestQueue requestQueue;
-
+    private View view;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     public SearchFragment(){
 
@@ -59,11 +58,18 @@ public class SearchFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.view = view;
+        refresh();
+    }
+
+    private void refresh() {
+        System.out.println("call refresh");
+//        if(view == null) return;
         rv = (RecyclerView) view.findViewById(R.id.rv_search);
         mLayoutManager = new LinearLayoutManager(getContext());
         rv.setLayoutManager(mLayoutManager);
         ArrayList<FoodModel> fm = getFetchFoodModel();
-        mAdapter = new FoodListAdapter(fm);
+        mAdapter = new FoodListAdapter(fm, getContext());
         rv.setAdapter(mAdapter);
     }
 
@@ -80,11 +86,11 @@ public class SearchFragment extends Fragment {
     }
     private ArrayList<FoodModel> getFetchFoodModel() {
         final ArrayList<FoodModel> aFM = new ArrayList<FoodModel>();
-        String url = Config.base_url + "food/list";
+        String url = Config.base_url + "food";
         final JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, new JSONArray(), new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                final FoodModel finalModel = null;
+                final FoodModel finalModel = new FoodModel();
                 for (int i = 0; i < response.length(); i++) {
 
                     try {
@@ -96,23 +102,12 @@ public class SearchFragment extends Fragment {
                         model.setStoreAdress(dataStore.getString("name"));
                         model.setStoreName(dataStore.getString("address"));
                         model.setStoreId(dataStore.getString("id"));
-                        String foodImageUrl = Config.base_url + data.getString("food_image");
-                        ImageRequest imageRequest = new ImageRequest(foodImageUrl, new Response.Listener<Bitmap>() {
-                            @Override
-                            public void onResponse(Bitmap response) {
-                                finalModel.setFoodImage(response);
-                            }
-                        }, 0, 0, null, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-
-                            }
-                        });
-                        requestQueue.add(imageRequest);
-                        requestQueue.start();
-                        model.setFoodImage(finalModel.getFoodImage());
+                        model.setFoodImage(data.getString("food_image"));
                         aFM.add(model);
                     } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    catch (NullPointerException e){
                         e.printStackTrace();
                     }
                 }

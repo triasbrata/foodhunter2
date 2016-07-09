@@ -6,6 +6,7 @@
     android:background="@color/white"
     android:layout_height="match_parent">
     <LinearLayout
+        android:id="@+id/loading_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -13,17 +14,20 @@
         <com.github.ybq.android.spinkit.SpinKitView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/spin_kit"
-            style="@style/SpinKitView.FoldingCube"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:padding="30dp"
+            style="@style/SpinKitView.CubeGrid"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
             android:layout_gravity="center"
-            app:SpinKit_Color="@color/colorAccent" />
+            android:foregroundGravity="center"
+            app:SpinKit_Color="@color/textDark" />
         <TextView
             android:paddingTop="20dp"
+            android:textSize="20dp"
+            android:id="@+id/text_loading"
             android:layout_gravity="center_vertical"
             android:layout_width="match_parent"
-            android:textColor="@color/colorAccent"
+            android:gravity="center"
+            android:textColor="@color/textDark"
             android:layout_height="wrap_content"
             android:text="Loading..."
             />

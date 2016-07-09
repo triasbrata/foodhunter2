@@ -1,5 +1,6 @@
 package com.triasbrata.foodhunter.adapter;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
@@ -11,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.triasbrata.foodhunter.R;
+import com.triasbrata.foodhunter.etc.imagefromurl.ImageLoader;
 import com.triasbrata.foodhunter.model.FoodModel;
 
 import java.util.ArrayList;
@@ -21,45 +24,42 @@ import java.util.ArrayList;
  */
 public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHolder> {
     private ArrayList<FoodModel> mDataset;
-    private Typeface tfM;
-    private  ViewGroup parent;
+    private Context mContext;
 
-    public FoodListAdapter(ArrayList<FoodModel> fm) {
+    public FoodListAdapter(ArrayList<FoodModel> fm, Context context) {
         mDataset = fm;
+        mContext = context;
+
     }
 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.food_list_item,parent,false);
+        System.out.println(parent.getContext().getClass());
         ViewHolder vh = new ViewHolder((CardView) v);
-        Typeface tfM = Typeface.createFromAsset(parent.getContext().getAssets(),"font/avenir-next-lt-pro/AvenirNextLTPro-MediumCn.otf");
-        parent = parent;
         return vh;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        try {
-            if(mDataset.isEmpty())
-                return;
-            FoodModel dataFM = mDataset.get(position);
-            holder.mTxtFoodName.setText(dataFM.getFoodName());
-            holder.mTxtStoreName.setText(dataFM.getStoreName());
-            holder.mTxtStoreAddress.setText(dataFM.getStoreAdress());
-            holder.mTxtPriceTag.setText(dataFM.getFoodPrice());
-            Drawable likeIcon = dataFM.isUserLike() ?
-                    parent.getResources().getDrawable(R.drawable.like_small_selected):
-                    parent.getResources().getDrawable(R.drawable.like_small);
-            holder.mIconBtnLike.setImageDrawable(likeIcon);
-            holder.mImgFoodImage.setImageBitmap(dataFM.getFoodImage());
-        }catch (IndexOutOfBoundsException e){
-            e.printStackTrace();
-        }
+        if(mDataset.isEmpty())
+            return;
+        FoodModel dataFM = mDataset.get(position);
+        holder.mTxtFoodName.setText(dataFM.getFoodName());
+        holder.mTxtStoreName.setText(dataFM.getStoreName());
+        holder.mTxtStoreAddress.setText(dataFM.getStoreAdress());
+        holder.mTxtPriceTag.setText("Rp. "+String.valueOf(dataFM.getFoodPrice()));
+        Drawable likeIcon = dataFM.isUserLike() ?
+                mContext.getResources().getDrawable(R.drawable.like_small_selected):
+                mContext.getResources().getDrawable(R.drawable.like_small);
+        holder.mIconBtnLike.setImageDrawable(likeIcon);
+        Picasso.with(mContext).load(dataFM.getFoodImage()).centerCrop().resize(100,100).error(R.drawable.food).placeholder(R.drawable.food).into(holder.mImgFoodImage);
         cahngeFont(holder);
     }
 
     private void cahngeFont(ViewHolder holder) {
+        Typeface tfM =  Typeface.createFromAsset(mContext.getAssets(),"font/avenir-next-lt-pro/AvenirNextLTPro-MediumCn.otf");
         holder.mTxtStoreAddress.setTypeface(tfM);
         holder.mTxtStoreName.setTypeface(tfM);
         holder.mTxtFoodName.setTypeface(tfM);
@@ -68,7 +68,7 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return 1;
+        return mDataset.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

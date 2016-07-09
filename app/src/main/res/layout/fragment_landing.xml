@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.LandingFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -15,36 +16,62 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="21dp"
+            android:paddingBottom="5dp"
             >
-            <Button
+            <com.gigamole.library.ShadowLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_button"
-                android:text="@string/try_app"
                 android:layout_gravity="start"
-                android:textSize="17dp"
-                android:textColor="@color/TextRed"
-                android:id="@+id/btnTryApp" />
-            <Button
+                app:sl_shadowed="true"
+                app:sl_shadow_radius="6dp"
+                app:sl_shadow_distance="3dp"
+                app:sl_shadow_color="#16000000">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_button"
+                    android:text="@string/try_app"
+                    android:textSize="17dp"
+                    android:textColor="@color/TextRed"
+                    android:id="@+id/btnTryApp" />
+            </com.gigamole.library.ShadowLayout>
+            <com.gigamole.library.ShadowLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_button"
-                android:text="@string/log_in"
-                android:textColor="@color/TextRed"
-                android:id="@+id/btnLogIn"
-                android:textSize="17dp"
                 android:layout_gravity="end"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentEnd="true"
+                app:sl_shadowed="true"
+                app:sl_shadow_radius="6dp"
+                app:sl_shadow_distance="3dp"
+                app:sl_shadow_color="#16000000">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_button"
+                    android:text="@string/log_in"
+                    android:textColor="@color/TextRed"
+                    android:id="@+id/btnLogIn"
+                    android:textSize="17dp"
+                     />
+            </com.gigamole.library.ShadowLayout>
         </RelativeLayout>
-        <Button
+        <com.gigamole.library.ShadowLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_button"
-            android:textColor="@color/TextBlue"
-            android:textSize="17dp"
-            android:id="@+id/btnLogInFb"
-            android:text="@string/log_in_fb"/>
+            app:sl_shadowed="true"
+            app:sl_shadow_radius="6dp"
+            app:sl_shadow_distance="3dp"
+            app:sl_shadow_color="#16000000">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_button"
+                android:textColor="@color/TextBlue"
+                android:textSize="17dp"
+                android:id="@+id/btnLogInFb"
+                android:text="@string/log_in_fb"/>
+        </com.gigamole.library.ShadowLayout>
+
     </LinearLayout>
 </FrameLayout>
