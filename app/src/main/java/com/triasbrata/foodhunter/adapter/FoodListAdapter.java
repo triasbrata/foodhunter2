@@ -40,17 +40,22 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        FoodModel dataFM = mDataset.get(position);
-
-        holder.mTxtFoodName.setText(dataFM.getFoodName());
-        holder.mTxtStoreName.setText(dataFM.getStoreName());
-        holder.mTxtStoreAddress.setText(dataFM.getStoreAdress());
-        holder.mTxtPriceTag.setText(dataFM.getFoodPrice());
-        Drawable likeIcon = dataFM.isUserLike() ?
-                parent.getResources().getDrawable(R.drawable.like_small_selected):
-                parent.getResources().getDrawable(R.drawable.like_small);
-        holder.mIconBtnLike.setImageDrawable(likeIcon);
-        holder.mImgFoodImage.setImageBitmap(dataFM.getFoodImage());
+        try {
+            if(mDataset.isEmpty())
+                return;
+            FoodModel dataFM = mDataset.get(position);
+            holder.mTxtFoodName.setText(dataFM.getFoodName());
+            holder.mTxtStoreName.setText(dataFM.getStoreName());
+            holder.mTxtStoreAddress.setText(dataFM.getStoreAdress());
+            holder.mTxtPriceTag.setText(dataFM.getFoodPrice());
+            Drawable likeIcon = dataFM.isUserLike() ?
+                    parent.getResources().getDrawable(R.drawable.like_small_selected):
+                    parent.getResources().getDrawable(R.drawable.like_small);
+            holder.mIconBtnLike.setImageDrawable(likeIcon);
+            holder.mImgFoodImage.setImageBitmap(dataFM.getFoodImage());
+        }catch (IndexOutOfBoundsException e){
+            e.printStackTrace();
+        }
         cahngeFont(holder);
     }
 

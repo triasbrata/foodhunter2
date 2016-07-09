@@ -3,6 +3,7 @@ package com.triasbrata.foodhunter.fragment;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +31,6 @@ import org.json.JSONObject;
  */
 public class LoginFragment extends Fragment implements View.OnClickListener{
 
-    private View v;
     private Button btnRegister, btnLogin;
     private EditText txtUsername, txtPassword;
     private LandingActivity mActivity;
@@ -40,16 +40,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         // Required empty public constructor
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.fragment_login, container, false);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         Typeface tfDc = Typeface.createFromAsset(getActivity().getAssets(),"font/avenir-next-lt-pro/AvenirNextLTPro-DemiCn.otf");
         Typeface tfM = Typeface.createFromAsset(getActivity().getAssets(),"font/avenir-next-lt-pro/AvenirNextLTPro-MediumCn.otf");
-        btnRegister = (Button) v.findViewById(R.id.btnRegister);
-        btnLogin = (Button) v.findViewById(R.id.btnLogin);
-        txtUsername = (EditText) v.findViewById(R.id.txtUsername);
-        txtPassword = (EditText) v.findViewById(R.id.txtPassword);
+        btnRegister = (Button) view.findViewById(R.id.btnRegister);
+        btnLogin = (Button) view.findViewById(R.id.btnLogin);
+        txtUsername = (EditText) view.findViewById(R.id.txtUsername);
+        txtPassword = (EditText) view.findViewById(R.id.txtPassword);
         btnLogin.setOnClickListener(this);
         btnRegister.setOnClickListener(this);
         btnLogin.setTypeface(tfDc);
@@ -57,7 +56,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         txtPassword.setTypeface(tfM);
         txtUsername.setTypeface(tfM);
         mActivity = (LandingActivity) getActivity();
-        return v;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
     public static Fragment newInstance() {

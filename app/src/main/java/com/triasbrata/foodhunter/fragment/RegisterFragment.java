@@ -2,6 +2,7 @@ package com.triasbrata.foodhunter.fragment;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,16 +43,15 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_register, container, false);
-        btnRegister = (Button) v.findViewById(R.id.btnRegister);
-        btnBack = (Button) v.findViewById(R.id.btnBack);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        btnRegister = (Button) view.findViewById(R.id.btnRegister);
+        btnBack = (Button) view.findViewById(R.id.btnBack);
         btnRegister.setOnClickListener(this);
         btnBack.setOnClickListener(this);
-        txtUsername = (EditText) v.findViewById(R.id.txtUsername);
-        txtPassword = (EditText) v.findViewById(R.id.txtPassword);
-        txtTownBase = (EditText) v.findViewById(R.id.txtTownBase);
-        txtEmail = (EditText) v.findViewById(R.id.txtEmail);
+        txtUsername = (EditText) view.findViewById(R.id.txtUsername);
+        txtPassword = (EditText) view.findViewById(R.id.txtPassword);
+        txtTownBase = (EditText) view.findViewById(R.id.txtTownBase);
+        txtEmail = (EditText) view.findViewById(R.id.txtEmail);
         Typeface tfDc = Typeface.createFromAsset(getActivity().getAssets(),"font/avenir-next-lt-pro/AvenirNextLTPro-DemiCn.otf");
         Typeface tfM = Typeface.createFromAsset(getActivity().getAssets(),"font/avenir-next-lt-pro/AvenirNextLTPro-MediumCn.otf");
         btnBack.setTypeface(tfDc);
@@ -61,7 +61,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         txtTownBase.setTypeface(tfM);
         txtEmail.setTypeface(tfM);
         aActivity = (LandingActivity) getActivity();
-        return v;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_register, container, false);
     }
 
 

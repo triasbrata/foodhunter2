@@ -5,6 +5,7 @@ package com.triasbrata.foodhunter.fragment;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,6 @@ public class LandingFragment extends Fragment implements View.OnClickListener, A
 
     Button btnLogin, btnTryApp, btnLoginFb;
     LandingActivity mActivity;
-    View v;
     public LandingFragment() {
         // Required empty public constructor
     }
@@ -34,18 +34,23 @@ public class LandingFragment extends Fragment implements View.OnClickListener, A
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mActivity = (LandingActivity) getActivity();
-        v = inflater.inflate(R.layout.fragment_landing, container, false);
-        btnLoginFb = (Button) v.findViewById(R.id.btnLogInFb);
-        btnLogin = (Button) v.findViewById(R.id.btnLogIn);
-        btnTryApp = (Button) v.findViewById(R.id.btnTryApp);
+        btnLoginFb = (Button) view.findViewById(R.id.btnLogInFb);
+        btnLogin = (Button) view.findViewById(R.id.btnLogIn);
+        btnTryApp = (Button) view.findViewById(R.id.btnTryApp);
         btnLogin.setTypeface(getTypeFaceDemi());
         btnLoginFb.setTypeface(getTypeFaceDemi());
         btnTryApp.setTypeface(getTypeFaceDemi());
         btnLogin.setOnClickListener(this);
         btnTryApp.setOnClickListener(this);
-        return v;
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+       return inflater.inflate(R.layout.fragment_landing, container, false);
     }
 
 
@@ -70,6 +75,7 @@ public class LandingFragment extends Fragment implements View.OnClickListener, A
 
     private void btnTryAppListener() {
         startActivity(new Intent(mActivity,DashboardActivity.class));
+        mActivity.finish();
 
 
     }

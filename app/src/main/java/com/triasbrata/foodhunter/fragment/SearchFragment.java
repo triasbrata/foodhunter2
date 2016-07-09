@@ -6,9 +6,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -40,12 +42,9 @@ import java.util.HashMap;
  * Created by triasbrata on 08/07/16.
  */
 public class SearchFragment extends Fragment {
-    private View v;
     private RecyclerView rv;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private Map map = null;
-    private MapFragment mapFragment = null;
     private RequestQueue requestQueue;
 
 
@@ -57,45 +56,35 @@ public class SearchFragment extends Fragment {
         return new SearchFragment();
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.fragment_search,container,false);
-        rv = (RecyclerView) v.findViewById(R.id.rv_search);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        rv = (RecyclerView) view.findViewById(R.id.rv_search);
         mLayoutManager = new LinearLayoutManager(getContext());
         rv.setLayoutManager(mLayoutManager);
         ArrayList<FoodModel> fm = getFetchFoodModel();
         mAdapter = new FoodListAdapter(fm);
         rv.setAdapter(mAdapter);
-        mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.mapfragment);
-        mapFragment.init(new OnEngineInitListener() {
-            @Override
-            public void onEngineInitializationCompleted(
-                    OnEngineInitListener.Error error)
-            {
-                if (error == OnEngineInitListener.Error.NONE) {
-                    // retrieve a reference of the map from the map fragment
-                    map = mapFragment.getMap();
-                    // Set the map center to the Vancouver region (no animation)
-                    map.setCenter(new GeoCoordinate(49.196261, -123.004773, 0.0),
-                            Map.Animation.NONE);
-                    // Set the zoom level to the average between min and max
-                    map.setZoomLevel(
-                            (map.getMaxZoomLevel() + map.getMinZoomLevel()) / 2);
-                } else {
-                    System.out.println("ERROR: Cannot initialize Map Fragment");
-                }
-            }
-        });
-        return  v;
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = null;
+        try{
+            v = inflater.inflate(R.layout.fragment_search,container,false);
+        }catch (InflateException e){
+            e.printStackTrace();
+        }
+        return v;
+    }
     private ArrayList<FoodModel> getFetchFoodModel() {
         final ArrayList<FoodModel> aFM = new ArrayList<FoodModel>();
         String url = Config.base_url + "food/list";
-        final JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, new JSONObject(), new Response.Listener<JSONArray>() {
+        final JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, new JSONArray(), new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+                final FoodModel finalModel = null;
                 for (int i = 0; i < response.length(); i++) {
 
                     try {
@@ -108,7 +97,6 @@ public class SearchFragment extends Fragment {
                         model.setStoreName(dataStore.getString("address"));
                         model.setStoreId(dataStore.getString("id"));
                         String foodImageUrl = Config.base_url + data.getString("food_image");
-                        final FoodModel finalModel = model;
                         ImageRequest imageRequest = new ImageRequest(foodImageUrl, new Response.Listener<Bitmap>() {
                             @Override
                             public void onResponse(Bitmap response) {
@@ -122,16 +110,17 @@ public class SearchFragment extends Fragment {
                         });
                         requestQueue.add(imageRequest);
                         requestQueue.start();
+                        model.setFoodImage(finalModel.getFoodImage());
+                        aFM.add(model);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    aFM.add(finalModel.getModel());
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         requestQueue = Volley.newRequestQueue(getActivity());

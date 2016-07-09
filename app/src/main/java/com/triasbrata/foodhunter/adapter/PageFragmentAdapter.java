@@ -14,6 +14,7 @@ import com.triasbrata.foodhunter.fragment.UserFragment;
  * Created by triasbrata on 08/07/16.
  */
 public class PageFragmentAdapter extends FragmentPagerAdapter {
+    private final int PAGE_COUNT= 4;
     public PageFragmentAdapter(FragmentManager supportFragmentManager) {
         super(supportFragmentManager);
     }
@@ -33,6 +34,6 @@ public class PageFragmentAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return PAGE_COUNT;
     }
 }
