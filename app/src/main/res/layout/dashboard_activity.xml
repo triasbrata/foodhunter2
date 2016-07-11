@@ -1,53 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+<RelativeLayout android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="match_parent">
-    <LinearLayout
-        android:id="@+id/loading_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <include layout="@layout/piece_dashboard_activity"/>
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/backdrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_vertical">
-        <com.github.ybq.android.spinkit.SpinKitView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/spin_kit"
-            style="@style/SpinKitView.CubeGrid"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:layout_gravity="center"
-            android:foregroundGravity="center"
-            app:SpinKit_Color="@color/textDark" />
-        <TextView
-            android:paddingTop="20dp"
-            android:textSize="20dp"
-            android:id="@+id/text_loading"
-            android:layout_gravity="center_vertical"
-            android:layout_width="match_parent"
-            android:gravity="center"
-            android:textColor="@color/textDark"
-            android:layout_height="wrap_content"
-            android:text="Loading..."
-            />
-    </LinearLayout>
-    <android.support.v4.view.ViewPager
-        android:id="@+id/view_pager"
-        android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="match_parent" />
-
-    <com.gigamole.navigationtabbar.ntb.NavigationTabBar
-        android:id="@+id/navigation"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/white"
-        app:ntb_badge_gravity="top"
-        app:ntb_badge_position="right"
-        app:ntb_badged="true"
-        app:ntb_scaled="true"
-        app:ntb_tinted="true"
-        app:ntb_title_mode="all"
-        app:ntb_titled="true"/>
-</LinearLayout>
+        android:gravity="bottom"
+        android:background="#40000000">
+            <FrameLayout
+                android:id="@+id/fragment_backdrop"
+                android:layout_width="match_parent"
+                android:layout_weight="50"
+                android:background="@color/white"
+                android:layout_height="wrap_content">
+            </FrameLayout>
+    </RelativeLayout>
+</RelativeLayout>

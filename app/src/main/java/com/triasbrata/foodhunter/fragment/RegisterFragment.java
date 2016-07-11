@@ -4,6 +4,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,21 +12,17 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.triasbrata.foodhunter.LandingActivity;
 import com.triasbrata.foodhunter.R;
 import com.triasbrata.foodhunter.etc.Config;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-
 public class RegisterFragment extends Fragment implements View.OnClickListener {
 
+    private static final String TAG = "RegisterFragment";
     Button btnRegister,btnBack;
     LandingActivity aActivity;
     private EditText txtUsername;
@@ -82,14 +79,14 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     }
 
     private void mBtnRegisterListener() {
-        RequestQueue queue = Volley.newRequestQueue(aActivity);
+
+
         String url = Config.base_url + "register";
-        try {
-            JSONObject userCredential = new JSONObject();
-            userCredential.put("username", txtUsername.getText().toString());
-            userCredential.put("password", txtPassword.getText().toString());
-            userCredential.put("town_base", txtTownBase.getText().toString());
-            userCredential.put("email", txtEmail.getText().toString());
+            JsonObject userCredential = new JsonObject();
+            userCredential.addProperty("username", txtUsername.getText().toString());
+            userCredential.addProperty("password", txtPassword.getText().toString());
+            userCredential.addProperty("town_base", txtTownBase.getText().toString());
+            userCredential.addProperty("email", txtEmail.getText().toString());
             final MaterialDialog md = new MaterialDialog.Builder(aActivity)
                     .content(R.string.please_wait)
                     .canceledOnTouchOutside(false)
@@ -98,25 +95,31 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                     .cancelable(false)
                     .progress(true, 0)
                     .show();
-            JsonObjectRequest request = new JsonObjectRequest(url, userCredential, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    md.dismiss();
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    md.dismiss();
-                    new MaterialDialog.Builder(aActivity)
-                            .backgroundColorRes(R.color.white)
-                            .contentColorRes(R.color.textDark)
-                            .content(error.getMessage())
-                            .show();
-                }
-            });
-            queue.add(request);
-        } catch (JSONException e) {
-            e.printStackTrace();
+            Ion.with(getContext())
+                    .load(url)
+                    .setJsonObjectBody(userCredential)
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+                            Log.d(TAG, "onCompleted: ", new Throwable(e.getMessage(), e.getCause()));
+                            md.dismiss();
+                            if (e != null) {
+                                new MaterialDialog.Builder(aActivity)
+                                        .backgroundColorRes(R.color.white)
+                                        .contentColorRes(R.color.textDark)
+                                        .content(e.getMessage())
+                                        .show();
+                                return;
+                            }
+                            registerSuccess();
+
+                        }
+                    });
         }
+
+    private void registerSuccess() {
+
+
     }
 }

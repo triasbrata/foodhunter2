@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.triasbrata.foodhunter.LandingActivity;
 import com.triasbrata.foodhunter.R;
 import com.triasbrata.foodhunter.etc.Config;
@@ -31,6 +31,7 @@ import org.json.JSONObject;
  */
 public class LoginFragment extends Fragment implements View.OnClickListener{
 
+    private static final String TAG = "Login Fragment";
     private Button btnRegister, btnLogin;
     private EditText txtUsername, txtPassword;
     private LandingActivity mActivity;
@@ -91,40 +92,49 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     }
 
     public void mMakeRequestLogin(String username, String password) {
-        RequestQueue queue = Volley.newRequestQueue(mActivity);
+        final MaterialDialog md = new MaterialDialog.Builder(mActivity)
+                .content(R.string.please_wait)
+                .canceledOnTouchOutside(false)
+                .backgroundColorRes(R.color.white)
+                .contentColorRes(R.color.textDark)
+                .cancelable(false)
+                .progress(true, 0)
+                .show();
+        JsonObject json = new JsonObject();
+        json.addProperty("username", username);
+        json.addProperty("password", password);
         String url = Config.base_url + "login";
-        try {
-            JSONObject userCredential = new JSONObject();
-            userCredential.put("username", username);
-            userCredential.put("password", password);
-            final MaterialDialog md = new MaterialDialog.Builder(mActivity)
-                    .content(R.string.please_wait)
-                    .canceledOnTouchOutside(false)
-                    .backgroundColorRes(R.color.white)
-                    .contentColorRes(R.color.textDark)
-                    .cancelable(false)
-                    .progress(true, 0)
-                    .show();
-            JsonObjectRequest request = new JsonObjectRequest(url, userCredential, new Response.Listener<JSONObject>() {
+        Ion.with(getContext())
+            .load(url)
+            .setJsonObjectBody(json)
+            .asJsonObject()
+            .setCallback(new FutureCallback<JsonObject>() {
                 @Override
-                public void onResponse(JSONObject response) {
+                public void onCompleted(Exception e, JsonObject result) {
                     md.dismiss();
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    md.dismiss();
-                    new MaterialDialog.Builder(mActivity)
-                            .backgroundColorRes(R.color.white)
-                            .contentColorRes(R.color.textDark)
-                            .content(error.getMessage())
-                            .show();
+                    if(e != null){
+                                new MaterialDialog.Builder(mActivity)
+                                .backgroundColorRes(R.color.white)
+                                .contentColorRes(R.color.textDark)
+                                .content(e.getMessage())
+                                .show();
+                        return;
+                    }
+                    if(!result.isJsonNull()){
+                        new MaterialDialog.Builder(mActivity)
+                                .backgroundColorRes(R.color.white)
+                                .contentColorRes(R.color.textDark)
+                                .content("Gagal Login")
+                                .show();
+                    }
+                    loginSuccess();
+                    
                 }
             });
-            queue.add(request);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    }
+
+    private void loginSuccess() {
+
     }
 
 

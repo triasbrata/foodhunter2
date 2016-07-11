@@ -8,10 +8,14 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -20,22 +24,31 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.gigamole.navigationtabbar.ntb.NavigationTabBar;
 import com.nineoldandroids.animation.Animator;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.triasbrata.foodhunter.adapter.PageFragmentAdapter;
 import com.triasbrata.foodhunter.etc.BitmapOperation;
+import com.triasbrata.foodhunter.fragment.FragmentDialog;
+import com.triasbrata.foodhunter.fragment.LikeFragment;
+import com.triasbrata.foodhunter.fragment.PopularFragment;
+import com.triasbrata.foodhunter.fragment.ListFoodFragment;
+import com.triasbrata.foodhunter.fragment.UserFragment;
+import com.triasbrata.foodhunter.fragment.interfaces.RecyclerAdapterRefresh;
 
 
 import java.util.ArrayList;
 
 public class DashboardActivity extends FragmentActivity{
 
+    private static final String TAG = "DashboardActivity";
     ViewPager aViewPage;
     Drawable userImage;
     private TextView textLoading;
     private LinearLayout loadingLayout;
     private ArrayList<NavigationTabBar.Model> models = new ArrayList<>();
     public NavigationTabBar navigationTabBar;
+    private ArrayList<Fragment> mFragments = new ArrayList<Fragment>();
     private Target target = new Target() {
 
 
@@ -56,6 +69,7 @@ public class DashboardActivity extends FragmentActivity{
         }
     };
     private boolean isLogged = true;
+    public LinearLayout mdragView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,14 +81,42 @@ public class DashboardActivity extends FragmentActivity{
 
 
         aViewPage = (ViewPager) findViewById(R.id.view_pager);
-        final PageFragmentAdapter pAdapter = new PageFragmentAdapter(getSupportFragmentManager());
+        mFragments.add(0,ListFoodFragment.newInstance());
+        mFragments.add(1,LikeFragment.newInstance());
+        mFragments.add(2,PopularFragment.newInstance());
+        mFragments.add(3,UserFragment.newInstance());
+        PageFragmentAdapter pAdapter = new PageFragmentAdapter(mFragments,getSupportFragmentManager());
         aViewPage.setAdapter(pAdapter);
+        aViewPage.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Log.d(TAG, "onPageSelected: "+position);
+                Fragment f = mFragments.get(position);
+                View v = f.getView();
+                ((RecyclerAdapterRefresh)f).dataRefresher();
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         textLoading.setText("Preparing for you...");
         makeNavigationBottom();
         if(isLogged){
             userNavigate();
         }
+        makeSlideUpWindow();
 
+    }
+
+    private void makeSlideUpWindow() {
     }
 
     private void userNavigate() {
@@ -164,5 +206,4 @@ public class DashboardActivity extends FragmentActivity{
     public void onBackPressed() {
 
     }
-
 }
