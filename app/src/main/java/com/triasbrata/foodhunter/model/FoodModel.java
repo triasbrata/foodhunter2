@@ -3,6 +3,9 @@ package com.triasbrata.foodhunter.model;
 import android.graphics.Bitmap;
 import android.view.View;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.triasbrata.foodhunter.adapter.interfaces.FoodListOnClickListener;
 
 /**
@@ -124,5 +127,34 @@ public class FoodModel {
 
     public void setFoodId(String foodId) {
         FoodId = foodId;
+    }
+    public JsonObject toJson(){
+        JsonObject json = new JsonObject();
+        json.addProperty("food_image",foodImage);
+        json.addProperty("food_name",foodName);
+        json.addProperty("food_price",foodPrice);
+        JsonObject store = new JsonObject();
+        store.addProperty("id",storeId);
+        store.addProperty("name",storeName);
+        store.addProperty("address",storeAdress);
+        json.add("store",store);
+
+        return json;
+    }
+    public void parseJson(String json){
+        JsonObject jsonObject = (new JsonParser()).parse(json).getAsJsonObject();
+        if(jsonObject != null){
+            foodImage = jsonObject.get("food_image").getAsString();
+            foodName = jsonObject.get("food_name").getAsString();
+            foodPrice = jsonObject.get("food_price").getAsInt();
+            JsonObject store = jsonObject.getAsJsonObject("store");
+            storeAdress = store.get("address").getAsString();
+            storeName = store.get("name").getAsString();
+            storeId = store.get("id").getAsString();
+        }
+    }
+    @Override
+    public String toString() {
+        return toJson().toString();
     }
 }

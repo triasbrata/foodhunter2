@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -24,12 +23,10 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.gigamole.navigationtabbar.ntb.NavigationTabBar;
 import com.nineoldandroids.animation.Animator;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.triasbrata.foodhunter.adapter.PageFragmentAdapter;
 import com.triasbrata.foodhunter.etc.BitmapOperation;
-import com.triasbrata.foodhunter.fragment.FragmentDialog;
 import com.triasbrata.foodhunter.fragment.LikeFragment;
 import com.triasbrata.foodhunter.fragment.PopularFragment;
 import com.triasbrata.foodhunter.fragment.ListFoodFragment;
@@ -48,6 +45,7 @@ public class DashboardActivity extends FragmentActivity{
     private LinearLayout loadingLayout;
     private ArrayList<NavigationTabBar.Model> models = new ArrayList<>();
     public NavigationTabBar navigationTabBar;
+    public boolean isOpenDialog = false;
     private ArrayList<Fragment> mFragments = new ArrayList<Fragment>();
     private Target target = new Target() {
 
@@ -99,7 +97,6 @@ public class DashboardActivity extends FragmentActivity{
                 Fragment f = mFragments.get(position);
                 View v = f.getView();
                 ((RecyclerAdapterRefresh)f).dataRefresher();
-
             }
 
             @Override
@@ -204,6 +201,15 @@ public class DashboardActivity extends FragmentActivity{
 
     @Override
     public void onBackPressed() {
+        if(isOpenDialog){
+            removeFoodDialog();
+            return;
+        }
+    }
 
+    public void removeFoodDialog() {
+        ((RelativeLayout) findViewById(R.id.backdrop)).setVisibility(View.GONE);
+        getSupportFragmentManager().popBackStack();
+        isOpenDialog = false;
     }
 }

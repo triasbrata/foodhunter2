@@ -1,6 +1,5 @@
 package com.triasbrata.foodhunter.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -23,12 +21,9 @@ import com.triasbrata.foodhunter.R;
 import com.triasbrata.foodhunter.adapter.FoodListAdapter;
 import com.triasbrata.foodhunter.adapter.interfaces.FoodListOnClickListener;
 import com.triasbrata.foodhunter.etc.Config;
+import com.triasbrata.foodhunter.fragment.dialogs.DialogFoodDetailFragment;
 import com.triasbrata.foodhunter.fragment.interfaces.RecyclerAdapterRefresh;
 import com.triasbrata.foodhunter.model.FoodModel;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -46,27 +41,22 @@ public class ListFoodFragment extends Fragment implements RecyclerAdapterRefresh
             protected final FutureCallback<JsonObject> callbackViewListener = new FutureCallback<JsonObject>() {
                 @Override
                 public void onCompleted(Exception e, JsonObject result) {
-//                    if (e != null || result.equals(new JsonObject())) {
-//                        Toast.makeText(mView.getContext(), "Makanan tidak ditemukan", Toast.LENGTH_SHORT).show();
-//                        return;
-//                    }
-                    Log.d(TAG, "onCompleted: result: "+result.toString());
-                    DashboardActivity mActivity = (DashboardActivity) mView.getContext();
-                    ((RelativeLayout) mActivity.findViewById(R.id.backdrop)).setVisibility(View.VISIBLE);
-                    mActivity.getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left,R.anim.exit_to_right).replace(R.id.fragment_backdrop,FragmentDialog.newInstance()).commit();
-//                            mActivity.getFragmentManager().beginTransaction().replace()
+                    if (e != null || result.equals(new JsonObject())) {
+                        Toast.makeText(mView.getContext(), "Makanan tidak ditemukan", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    DialogFoodDetailFragment f =  DialogFoodDetailFragment.newInstance(result.toString());
+                    f.show(((DashboardActivity) mView.getContext()).getSupportFragmentManager(),"");
                 }
             };
             @Override
             public void onClickListener(final View v, final String idItem) {
                 mView = v;
                 String url = Config.base_url+"food/"+idItem;
-                Log.d(TAG, "onClickListener: "+url);
                 Ion.with(v.getContext())
                     .load(url)
                     .asJsonObject()
                     .setCallback(callbackViewListener);
-                Toast.makeText(v.getContext(), "Card view clicked", Toast.LENGTH_SHORT).show();
             }
         },
         btnLikeListener = new FoodListOnClickListener() {
@@ -107,7 +97,7 @@ public class ListFoodFragment extends Fragment implements RecyclerAdapterRefresh
                     Log.d(TAG, "onCompleted: result: "+result.toString());
 //                    DashboardActivity mActivity = (DashboardActivity) mView.getContext();
 //                    ((RelativeLayout) mActivity.findViewById(R.id.backdrop)).setVisibility(View.VISIBLE);
-//                    mActivity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_backdrop,FragmentDialog.newInstance()).commit();
+//                    mActivity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_backdrop,DialogFoodDetailFragment.newInstance()).commit();
 ////                            mActivity.getFragmentManager().beginTransaction().replace()
                 }
             };
@@ -128,23 +118,28 @@ public class ListFoodFragment extends Fragment implements RecyclerAdapterRefresh
         @Override
         public void onCompleted(Exception e, JsonArray result) {
             mFoodModel.clear();
-            for (int i = 0; i < result.size(); i++){
-                JsonObject data = result.get(i).getAsJsonObject();
-                FoodModel model = new FoodModel();
-                model.setFoodId(data.get("id").getAsString());
-                model.setFoodName(data.get("food_name").getAsString());
-                model.setFoodPrice(data.get("food_price").getAsInt());
-                JsonObject dataStore = data.get("store").getAsJsonObject();
-                model.setStoreAdress(dataStore.get("name").getAsString());
-                model.setStoreName(dataStore.get("address").getAsString());
-                model.setStoreId(dataStore.get("id").getAsString());
-                model.setFoodImage(data.get("food_image").getAsString());
-                model.addListenerBtnBrowse(btnBrowseListener);
-                model.addListenerBtnLike(btnLikeListener);
-                model.addListenerCardView(viewListener);
-                mFoodModel.add(model);
+            if(e != null){
+                Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                return;
             }
-
+            if( result.size() > 0 ){
+                for (int i = 0; i < result.size(); i++){
+                    JsonObject data = result.get(i).getAsJsonObject();
+                    FoodModel model = new FoodModel();
+                    model.setFoodId(data.get("id").getAsString());
+                    model.setFoodName(data.get("food_name").getAsString());
+                    model.setFoodPrice(data.get("food_price").getAsInt());
+                    JsonObject dataStore = data.get("store").getAsJsonObject();
+                    model.setStoreAdress(dataStore.get("name").getAsString());
+                    model.setStoreName(dataStore.get("address").getAsString());
+                    model.setStoreId(dataStore.get("id").getAsString());
+                    model.setFoodImage(data.get("food_image").getAsString());
+                    model.addListenerBtnBrowse(btnBrowseListener);
+                    model.addListenerBtnLike(btnLikeListener);
+                    model.addListenerCardView(viewListener);
+                    mFoodModel.add(model);
+                }
+            }
         }
     };
 
@@ -179,7 +174,7 @@ public class ListFoodFragment extends Fragment implements RecyclerAdapterRefresh
     }
     private ArrayList<FoodModel> getFetchFoodModel() {
         String url = Config.base_url + "food";
-        Ion.with(getActivity())
+        Ion.with(getContext())
                 .load(url)
                 .asJsonArray()
                 .setCallback(mFuture);

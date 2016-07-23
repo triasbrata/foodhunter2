@@ -1,171 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:layout_gravity="bottom"
     android:layout_height="wrap_content"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:gravity="bottom">
-    <com.daimajia.slider.library.SliderLayout
-        android:id="@+id/slider"
-        android:layout_height="256dp"
-        android:gravity="bottom"
-        android:layout_width="match_parent">
-        <LinearLayout
-            android:id="@+id/slider_top"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:paddingTop="16dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_height="wrap_content">
-            <LinearLayout
-                android:layout_weight="70"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:background="@drawable/back"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Back"
-                    android:paddingLeft="16dp" />
-            </LinearLayout>
-            <com.daimajia.slider.library.Indicators.PagerIndicator
-                android:layout_weight="30"
-                android:gravity="right"
-                android:id="@+id/custom_indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                custom:selected_color="@color/textDark"
-                custom:unselected_color="@color/white"
-                custom:shape="oval"
-                custom:selected_width="6dp"
-                custom:selected_height="6dp"
-                custom:unselected_width="6dp"
-                custom:unselected_height="6dp"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_gravity="bottom"
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:background="#35080808"
-            android:layout_marginTop="182dp"
-            android:layout_height="78dp"
-            android:weightSum="100"
-            android:gravity="center"
-            android:paddingLeft="8dp"
-            android:paddingTop="4dp"
-            android:paddingRight="8dp">
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_weight="70"
-                android:layout_height="match_parent">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="20dp"
-                    android:text="Kebab Turky Ayam Bakar"
-                    android:id="@+id/textView" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:textSize="14dp"
-                    android:layout_height="wrap_content"
-                    android:text="Kebab Turky"
-                    android:id="@+id/textView3" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12dp"
-                    android:text="Jln. PM Noor Blok AC No 3"
-                    android:id="@+id/textView2" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="30"
-                android:orientation="horizontal"
-                android:gravity="right|center_vertical"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:background="@drawable/price_white"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="15.000,-"
-                    android:paddingLeft="12dp" />
-            </LinearLayout>
-        </LinearLayout>
-    </com.daimajia.slider.library.SliderLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:background="@color/white"
-        android:gravity="center_vertical"
-        android:layout_height="62dp">
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:layout_height="wrap_content">
+        <com.daimajia.slider.library.SliderLayout
+            android:id="@+id/slider"
+            android:layout_height="256dp"
+            android:gravity="bottom"
+            android:layout_width="match_parent">
+            <LinearLayout
+                android:id="@+id/slider_top"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:paddingTop="16dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_weight="70"
+                    android:id="@+id/btnBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:background="@drawable/back"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Back"
+                        android:paddingLeft="16dp" />
+                </LinearLayout>
+                <com.daimajia.slider.library.Indicators.PagerIndicator
+                    android:layout_weight="30"
+                    android:gravity="right"
+                    android:id="@+id/custom_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    custom:selected_color="@color/textDark"
+                    custom:unselected_color="@color/white"
+                    custom:shape="oval"
+                    custom:selected_width="6dp"
+                    custom:selected_height="6dp"
+                    custom:unselected_width="6dp"
+                    custom:unselected_height="6dp"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_gravity="bottom"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:background="#35080808"
+                android:layout_marginTop="182dp"
+                android:layout_height="78dp"
+                android:weightSum="100"
+                android:gravity="center"
+                android:paddingLeft="8dp"
+                android:paddingTop="4dp"
+                android:paddingRight="8dp">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="70"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:text="Kebab Turky Ayam Bakar"
+                        android:id="@+id/food_name" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:textSize="14dp"
+                        android:layout_height="wrap_content"
+                        android:text="Kebab Turky"
+                        android:id="@+id/store_name" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="Jln. PM Noor Blok AC No 3"
+                        android:id="@+id/store_address" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="30"
+                    android:orientation="horizontal"
+                    android:gravity="right|center_vertical"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:background="@drawable/price_white"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:id="@+id/food_price"
+                        android:layout_height="wrap_content"
+                        android:text="15.000,-"
+                        android:paddingLeft="12dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.daimajia.slider.library.SliderLayout>
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="33.3"
+            android:layout_width="match_parent"
             android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_height="match_parent">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:background="@drawable/btn_img_love"
-                android:layout_marginRight="10dp"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:textSize="15dp"
-                android:textColor="@color/TextRed"
-                android:layout_height="wrap_content"
-                android:text="Like it!"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="33.3"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_height="match_parent">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/btn_img_nav"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#2980B9"
-                android:textSize="15dp"
-                android:text="Navigate"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="33.3"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_height="match_parent">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/btn_img_store"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:textSize="15dp"
-                android:textColor="@color/textDark"
-                android:layout_height="wrap_content"
-                android:text="Browse"/>
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:layout_height="62dp">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="33.3"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:id="@+id/btnLike"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:background="@drawable/btn_img_love"
+                    android:layout_marginRight="10dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:textSize="15dp"
+
+                    android:textColor="@color/TextRed"
+                    android:layout_height="wrap_content"
+                    android:text="Like it!"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="33.3"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:id="@+id/btnNavigate"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/btn_img_nav"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#2980B9"
+                    android:textSize="15dp"
+                    android:text="Navigate"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="33.3"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:id="@+id/btnBrowse"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/btn_img_store"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:textSize="15dp"
+                    android:textColor="@color/textDark"
+                    android:layout_height="wrap_content"
+                    android:text="Browse"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

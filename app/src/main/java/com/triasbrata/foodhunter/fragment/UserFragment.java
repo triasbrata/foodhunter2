@@ -35,18 +35,25 @@ public class UserFragment extends Fragment implements RecyclerAdapterRefresh {
     private final FutureCallback<JsonArray> mFuture =new FutureCallback<JsonArray>() {
         @Override
         public void onCompleted(Exception e, JsonArray result) {
+            if(e != null){
+                Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                return;
+            }
             mFoodModel.clear();
-            for (int i = 0; i < result.size(); i++){
-                JsonObject data = result.get(i).getAsJsonObject();
-                FoodModel model = new FoodModel();
-                model.setFoodName(data.get("food_name").getAsString());
-                model.setFoodPrice(data.get("food_price").getAsInt());
-                JsonObject dataStore = data.get("store").getAsJsonObject();
-                model.setStoreAdress(dataStore.get("name").getAsString());
-                model.setStoreName(dataStore.get("address").getAsString());
-                model.setStoreId(dataStore.get("id").getAsString());
-                model.setFoodImage(data.get("food_image").getAsString());
-                mFoodModel.add(model);
+            if( result.size() > 0 ){
+                for (int i = 0; i < result.size(); i++){
+                    JsonObject data = result.get(i).getAsJsonObject();
+                    FoodModel model = new FoodModel();
+                    model.setFoodId(data.get("id").getAsString());
+                    model.setFoodName(data.get("food_name").getAsString());
+                    model.setFoodPrice(data.get("food_price").getAsInt());
+                    JsonObject dataStore = data.get("store").getAsJsonObject();
+                    model.setStoreAdress(dataStore.get("name").getAsString());
+                    model.setStoreName(dataStore.get("address").getAsString());
+                    model.setStoreId(dataStore.get("id").getAsString());
+                    model.setFoodImage(data.get("food_image").getAsString());
+                    mFoodModel.add(model);
+                }
             }
 
         }

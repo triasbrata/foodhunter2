@@ -95,6 +95,7 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHo
             Log.d(TAG, "onClick: listener gone");
             return;
         }
+        Log.d(TAG, "onClick: "+c.mId);
         c.mListener.onClickListener(v,c.mId);
     }
 
