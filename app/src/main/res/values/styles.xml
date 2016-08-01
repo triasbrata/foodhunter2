@@ -23,14 +23,10 @@
 
     <style name="AppTheme.FullScreen.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="DialogSlideAnim">x
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowEnterAnimation">@anim/enter_from_left</item>
-        <item name="android:windowShowAnimation">@anim/enter_from_left</item>
-        <item name="android:windowHideAnimation">@anim/exit_to_left</item>
-        <item name="android:windowExitAnimation">@anim/exit_to_left</item>
+    <style name="DialogSlideAnim" parent="AppTheme.FullScreen">
+        <!--<item name="android:windowEnterAnimation">@anim/enter_from_left</item>-->
+        <!--<item name="android:windowShowAnimation">@anim/enter_from_left</item>-->
+        <!--<item name="android:windowHideAnimation">@anim/exit_to_left</item>-->
+        <!--<item name="android:windowExitAnimation">@anim/exit_to_left</item>-->
     </style>
 </resources>

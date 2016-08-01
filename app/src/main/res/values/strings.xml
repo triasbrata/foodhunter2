@@ -24,4 +24,7 @@
     <string name="btnLike">Like</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="fav_food">Favorite food</string>
+    <string name="archivment">Archivment</string>
+    <string name="asd">asd</string>
 </resources>

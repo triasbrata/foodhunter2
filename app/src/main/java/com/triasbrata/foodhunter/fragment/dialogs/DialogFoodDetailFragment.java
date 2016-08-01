@@ -1,16 +1,13 @@
 package com.triasbrata.foodhunter.fragment.dialogs;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +22,6 @@ import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
-import com.daimajia.slider.library.Tricks.ViewPagerEx;
-import com.triasbrata.foodhunter.BrowseActivity;
 import com.triasbrata.foodhunter.DashboardActivity;
 import com.triasbrata.foodhunter.R;
 import com.triasbrata.foodhunter.model.FoodModel;
@@ -134,7 +129,8 @@ public class DialogFoodDetailFragment extends DialogFragment{
         mBrowseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mActivity,BrowseActivity.class));
+                DialogFoodDetailFragment.this.dismiss();
+                mActivity.loadStore();
             }
         });
     }

@@ -11,4 +11,6 @@
     <color name="textDarkHint">#802C3E50</color>
     <color name="textWhite">@color/white</color>
     <color name="white">#FFFFFF</color>
+    <color name="user_nav_bg_selected">@color/white</color>
+    <color name="user_nav_bg">#ECF0F1</color>
 </resources>

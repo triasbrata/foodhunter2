@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:gravity="bottom"
+        android:background="@color/white"
         android:layout_height="wrap_content">
         <com.daimajia.slider.library.SliderLayout
             android:id="@+id/slider"
@@ -131,7 +132,7 @@
                 android:layout_height="match_parent">
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:background="@drawable/btn_img_love"
+                    android:background="@drawable/nav_love_section_red"
                     android:layout_marginRight="10dp"
                     android:layout_height="wrap_content" />
                 <TextView
@@ -152,12 +153,12 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:background="@drawable/btn_img_nav"
+                    android:background="@drawable/nav_navigation"
                     android:layout_height="wrap_content" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#2980B9"
+                    android:textColor="@color/textDark"
                     android:textSize="15dp"
                     android:text="Navigate"/>
             </LinearLayout>
@@ -171,7 +172,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:background="@drawable/btn_img_store"
+                    android:background="@drawable/nav_shop_section_normal"
                     android:layout_height="wrap_content" />
                 <TextView
                     android:layout_width="wrap_content"

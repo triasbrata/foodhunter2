@@ -57,8 +57,8 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHo
         holder.mTxtStoreAddress.setText(dataFM.getStoreAdress());
         holder.mTxtPriceTag.setText("Rp. "+String.valueOf(dataFM.getFoodPrice()));
         Drawable likeIcon = dataFM.isUserLike() ?
-                mContext.getResources().getDrawable(R.drawable.like_small_selected):
-                mContext.getResources().getDrawable(R.drawable.like_small);
+                mContext.getResources().getDrawable(R.drawable.like_small_icon):
+                mContext.getResources().getDrawable(R.drawable.like_small_icon_selected);
         holder.mIconBtnLike.setImageDrawable(likeIcon);
         Picasso.with(mContext).load(dataFM.getFoodImage()).centerCrop().resize(100,100).error(R.drawable.food).placeholder(R.drawable.food).into(holder.mImgFoodImage);
         registerListene(position,holder,dataFM);

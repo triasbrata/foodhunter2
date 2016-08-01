@@ -17,6 +17,7 @@ public class FoodModel {
     private int foodPrice = 0;
     private boolean userLike = true;
     private FoodListOnClickListener listenerBtnLike,listenerBtnBrowse, listenerCardView;
+    private View.OnClickListener listenerHolder;
 
     public String getFoodImage() {
         return foodImage;
@@ -157,4 +158,9 @@ public class FoodModel {
     public String toString() {
         return toJson().toString();
     }
+
+    public View.OnClickListener getListenerHolder() {
+        return listenerHolder;
+    }
+
 }
