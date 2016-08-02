@@ -158,6 +158,11 @@ public class FoodModel {
     public String toString() {
         return toJson().toString();
     }
+    public static FoodModel parse(String json){
+        FoodModel fm = new FoodModel();
+        fm.parseJson(json);
+        return fm;
+    }
 
     public View.OnClickListener getListenerHolder() {
         return listenerHolder;

@@ -208,6 +208,7 @@ public class DashboardActivity extends FragmentActivity{
     }
 
     public void loadStore() {
+        ((StoreSectionFrament) mFragments.get(1)).changeViewToDetailStore();
         aViewPage.setCurrentItem(1);
     }
 }

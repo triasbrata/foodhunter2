@@ -3,10 +3,10 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <RelativeLayout
-        android:background="#FF00ee"
         android:layout_width="match_parent"
-        android:layout_height="255dp">
-    </RelativeLayout>
+        android:background="#ffee33"
+        android:id="@+id/store_frame_layout"
+        android:layout_height="@dimen/top_layout_height"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_search"
         android:layout_width="match_parent"

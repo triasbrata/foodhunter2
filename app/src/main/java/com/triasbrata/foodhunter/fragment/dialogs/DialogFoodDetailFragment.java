@@ -167,7 +167,7 @@ public class DialogFoodDetailFragment extends DialogFragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if(mActivity == null) mActivity = (DashboardActivity) getActivity();
         getDialog().setCanceledOnTouchOutside(true);
-        return  inflater.inflate(R.layout.fragment_dialog,container,false);
+        return  inflater.inflate(R.layout.fragment_dialog_food_detail,container,false);
     }
 
     @Override

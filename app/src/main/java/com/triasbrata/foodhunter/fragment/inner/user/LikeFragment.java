@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -37,9 +38,13 @@ public class LikeFragment extends android.support.v4.app.Fragment {
 
     final ArrayList<ArrayList<FoodModel>> mData = new ArrayList<>();
     final FutureCallback<JsonArray> fetchingDataFuture = new FutureCallback<JsonArray>() {
-        ArrayList<FoodModel> temp = new ArrayList<>();
         @Override
         public void onCompleted(Exception e, JsonArray result) {
+            if(e != null){
+                Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                return;
+            }
+            ArrayList<FoodModel> temp = new ArrayList<>();
             int x = 0;
             for (JsonElement rec : result) {
                 JsonObject data = rec.getAsJsonObject();
