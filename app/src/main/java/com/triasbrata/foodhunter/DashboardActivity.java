@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -31,6 +32,7 @@ import com.triasbrata.foodhunter.fragment.StoreSectionFrament;
 import com.triasbrata.foodhunter.fragment.PopularFragment;
 import com.triasbrata.foodhunter.fragment.UserSectionFragment;
 import com.triasbrata.foodhunter.fragment.interfaces.RecyclerAdapterRefresh;
+import com.triasbrata.foodhunter.utils.MakeLog;
 
 
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ public class DashboardActivity extends FragmentActivity{
     private ArrayList<NavigationTabBar.Model> models = new ArrayList<>();
     public NavigationTabBar navigationTabBar;
     private boolean isLogged = true;
+    private boolean IsDetailStoreView = false;
     private ArrayList<Fragment> mFragments = new ArrayList<Fragment>();
     private Target target = new Target() {
 
@@ -70,7 +73,7 @@ public class DashboardActivity extends FragmentActivity{
         @Override
         public void onPrepareLoad(Drawable placeHolderDrawable) {}
     };
-
+    private PageFragmentAdapter pAdapter;
 
 
     @Override
@@ -87,9 +90,19 @@ public class DashboardActivity extends FragmentActivity{
         mFragments.add(1, StoreSectionFrament.newInstance());
         mFragments.add(2, PopularFragment.newInstance());
         mFragments.add(3, UserSectionFragment.newInstance());
-        PageFragmentAdapter pAdapter = new PageFragmentAdapter(mFragments,getSupportFragmentManager());
+        pAdapter = new PageFragmentAdapter(mFragments,getSupportFragmentManager()){
+
+            @Override
+            public int getItemPosition(Object object) {
+                if(object instanceof  StoreSectionFrament && isDetailStoreView()){
+                    Log.d(TAG, "getItemPosition: StoreSectionFrament");
+                    ((StoreSectionFrament) object).changeViewToDetailStore();
+                    setDetailStoreView(false);
+                }
+                return super.getItemPosition(object);
+            }
+        };
         aViewPage.setAdapter(pAdapter);
-        aViewPage.setOffscreenPageLimit(1);
         textLoading.setText("Preparing for you...");
         makeNavigationBottom();
         makeSlideUpWindow();
@@ -122,6 +135,7 @@ public class DashboardActivity extends FragmentActivity{
          navigationTabBar.setIsBadgeUseTypeface(false);
          navigationTabBar.setViewPager(aViewPage);
          navigationTabBar.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
              @Override
              public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -129,10 +143,16 @@ public class DashboardActivity extends FragmentActivity{
 
              @Override
              public void onPageSelected(int position) {
-                 Log.d(TAG, "onPageSelected: "+position);
-                 Fragment f = mFragments.get(position);
-                 View v = f.getView();
-                 ((RecyclerAdapterRefresh)f).dataRefresher();
+                 pAdapter.notifyDataSetChanged();
+//                 Fragment f = mFragments.get(position);
+//                 try {
+//                     if(isDetailStoreView()){
+//                         ((StoreSectionFrament) f).changeViewToDetailStore();
+//                         setDetailStoreView(false);
+//                     }
+//                 }catch (ClassCastException e){
+//                     Log.d(TAG, "onPageSelected: "+e.getMessage(),e.getCause());
+//                 }
              }
 
              @Override
@@ -208,7 +228,15 @@ public class DashboardActivity extends FragmentActivity{
     }
 
     public void loadStore() {
-        ((StoreSectionFrament) mFragments.get(1)).changeViewToDetailStore();
+        setDetailStoreView(true);
         aViewPage.setCurrentItem(1);
+    }
+
+    public boolean isDetailStoreView() {
+        return IsDetailStoreView;
+    }
+
+    public void setDetailStoreView(boolean detailStoreView) {
+        IsDetailStoreView = detailStoreView;
     }
 }

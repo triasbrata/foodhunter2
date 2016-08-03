@@ -7,6 +7,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 
 
+import com.triasbrata.foodhunter.fragment.StoreSectionFrament;
+import com.triasbrata.foodhunter.fragment.interfaces.RecyclerAdapterRefresh;
+
 import java.util.ArrayList;
 
 /**
@@ -19,7 +22,6 @@ public class PageFragmentAdapter extends FragmentPagerAdapter {
         super(supportFragmentManager);
         this.mFragments = mFragments;
     }
-
     @Override
     public Fragment getItem(int pos) {
         return mFragments.get(pos);

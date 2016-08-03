@@ -11,8 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
@@ -27,6 +25,8 @@ import com.triasbrata.foodhunter.fragment.interfaces.RecyclerAdapterRefresh;
 import com.triasbrata.foodhunter.model.FoodModel;
 
 import java.util.ArrayList;
+
+import static android.graphics.Color.BLACK;
 
 /**
  * Created by triasbrata on 08/07/16.
@@ -66,6 +66,7 @@ public class StoreSectionFrament extends Fragment implements RecyclerAdapterRefr
         }
     };
     private Context mContext = null;
+    private LayoutInflater mInflater = null;
 
 
     public StoreSectionFrament(){}
@@ -77,9 +78,7 @@ public class StoreSectionFrament extends Fragment implements RecyclerAdapterRefr
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(mContext == null ){
-            mContext = getContext();
-        }
+        mInflater = inflater;
         return inflater.inflate(R.layout.fragment_store,container,false);
 
     }
@@ -90,7 +89,13 @@ public class StoreSectionFrament extends Fragment implements RecyclerAdapterRefr
         refresh(view);
     }
 
-
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        if(mContext == null ){
+            mContext = getContext();
+        }
+        super.onCreate(savedInstanceState);
+    }
 
     public void refresh(View view) {
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_search);
@@ -117,7 +122,11 @@ public class StoreSectionFrament extends Fragment implements RecyclerAdapterRefr
     }
 
     public void changeViewToDetailStore() {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.soter_detail_header, (ViewGroup) mView.findViewById(R.id.store_frame_layout),false);
+        getView().findViewById(R.id.store_frame_layout).setBackgroundColor(BLACK); // work
+        View v = getLayoutInflater(null).inflate(R.layout.store_detail_header, (ViewGroup) getView().findViewById(R.id.store_frame_layout), false);
+        ((ViewGroup) getView()).addView(v);
     }
+
+
 
 }
