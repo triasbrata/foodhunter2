@@ -17,8 +17,8 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.triasbrata.foodhunter.R;
-import com.triasbrata.foodhunter.adapter.UserFavAdapter;
-import com.triasbrata.foodhunter.model.FoodModel;
+import com.triasbrata.foodhunter.adapters.UserFavAdapter;
+import com.triasbrata.foodhunter.models.Food;
 
 import java.util.ArrayList;
 
@@ -33,10 +33,10 @@ import static com.triasbrata.foodhunter.etc.Config.URL;
 public class LikeFragment extends android.support.v4.app.Fragment {
 
     private static final String TAG = "LikeFragment";
-    @BindView(R.id.recyvle_view) RecyclerView mRecyclerView;
+    @BindView(R.id.recycle_view) RecyclerView mRecyclerView;
     private Context mContext;
 
-    final ArrayList<ArrayList<FoodModel>> mData = new ArrayList<>();
+    final ArrayList<ArrayList<Food>> mData = new ArrayList<>();
     final FutureCallback<JsonArray> fetchingDataFuture = new FutureCallback<JsonArray>() {
         @Override
         public void onCompleted(Exception e, JsonArray result) {
@@ -44,14 +44,10 @@ public class LikeFragment extends android.support.v4.app.Fragment {
                 Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
                 return;
             }
-            ArrayList<FoodModel> temp = new ArrayList<>();
+            ArrayList<Food> temp = new ArrayList<>();
             int x = 0;
             for (JsonElement rec : result) {
-                JsonObject data = rec.getAsJsonObject();
-                FoodModel model = new FoodModel();
-                model.setFoodName(data.get("food_name").getAsString());
-                model.setFoodId(data.get("id").getAsString());
-                model.setFoodImage(data.get("food_image").getAsString());
+                Food model = new Food( rec.getAsJsonObject());
                 temp.add(x,model);
                 if(x>0){
                     mData.add(temp);
@@ -76,8 +72,8 @@ public class LikeFragment extends android.support.v4.app.Fragment {
         makeRecyclerView();
     }
 
-    private ArrayList<ArrayList<FoodModel>> fetchingData() {
-        String url = URL.makeUrl(URL.user_like);
+    private ArrayList<ArrayList<Food>> fetchingData() {
+        String url = URL.makeUrl(URL.userLike);
         Log.d(TAG, "fetchingData: "+url);
         Ion.with(mContext)
                 .load(url)

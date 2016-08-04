@@ -4,20 +4,44 @@ package com.triasbrata.foodhunter.etc;
  * Created by triasbrata on 07/07/16.
  */
 public class Config {
-    public static String base_url = URL.base_url ;
+    public static String base_url = URL.baseUrl;
+    public static class TagBundle{
+        public static String Tag = TagBundle.class.getSimpleName();
+        public static String storeModel = Tag+"STORE_MODEL";
+    }
 
     public static class URL {
-        public static String base_url = "http://192.168.42.53:3000/";
-//        public static String base_url = "http://10.0.2.2:3000/";
-        public static String user_like = "food?fav";
-        private static String store_detail = "store/";
+        public static String baseUrl = "http://192.168.42.207:3000/";
+//        public static String baseUrl = "http://10.0.2.2:3000/";
+        public static String userLike = "food?fav";
+        private static String storeDetail = "store/";
+        public static String storeAll = "store";
+        public static String foodAll = "foods/:id?_expand=store";
+        private static String likeFood = "like";
 
         public static String makeUrl (String s){
-            return  base_url+s;
+            return  baseUrl +s;
         }
 
         public static String store_detail(String idItem) {
-            return makeUrl(store_detail+idItem);
+            return makeUrl(storeDetail +idItem);
+        }
+
+        public static String store_all() {
+            return  makeUrl(storeAll);
+        }
+
+        public static String food_detail(String idItem) {
+
+            return makeUrl(foodAll.replace(":id",idItem));
+        }
+
+        public static String like_food(String idItem) {
+            return  makeUrl(likeFood +"/"+idItem);
+        }
+
+        public static String food_all() {
+            return makeUrl(foodAll.replace("/:id",""));
         }
     }
 }

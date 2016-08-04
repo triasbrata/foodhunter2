@@ -22,9 +22,11 @@ import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
+import com.squareup.picasso.Picasso;
 import com.triasbrata.foodhunter.DashboardActivity;
 import com.triasbrata.foodhunter.R;
-import com.triasbrata.foodhunter.model.FoodModel;
+import com.triasbrata.foodhunter.models.Food;
+import com.triasbrata.foodhunter.models.Store;
 
 import java.util.HashMap;
 
@@ -40,7 +42,7 @@ public class DialogFoodDetailFragment extends DialogFragment{
     private TextView mFoodNameTxt,mFoodPriceTxt,mStoreNameTxt,mStoreAddress;
     private String TAG = "DialogFoodDetailFragment";
     private DashboardActivity mActivity = null;
-    private FoodModel mModel;
+    private Food mModel;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -48,28 +50,17 @@ public class DialogFoodDetailFragment extends DialogFragment{
         changeFont();
         registerFromModel(mModel);
         makeListener();
-        HashMap<String,Integer> gambar = new HashMap<String, Integer>();
-        gambar.put("gambar 1",R.drawable.background1);
-        gambar.put("gambar 2",R.drawable.gambar2);
-        gambar.put("gambar 3",R.drawable.gambar3);
-        gambar.put("gambar 4",R.drawable.gambar4);
+        for(String name : mModel.getImage().getSlide()){
 
-
-
-        for(String name : gambar.keySet()){
-
-            DefaultSliderView slideModel = new DefaultSliderView(getContext());
-            // initialize a SliderLayout
-            slideModel
-//                    .image(url_maps.get(name))
-                    .image(gambar.get(name))
+            DefaultSliderView slideModel = (DefaultSliderView) new DefaultSliderView(getContext())
+                    .image(name)
                     .setScaleType(BaseSliderView.ScaleType.CenterCrop);
-//                    .setPicasso(Picasso.with(getContext()));
 
             mDemoSlider.addSlider(slideModel);
         }
         PagerIndicator pdi = (PagerIndicator) view.findViewById(R.id.custom_indicator);
         mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Default);
+        mDemoSlider.setBackgroundColor(Color.parseColor("#E74C3C"));
         mDemoSlider.setCustomIndicator(pdi);
         mDemoSlider.setDuration(4000);
     }
@@ -77,10 +68,8 @@ public class DialogFoodDetailFragment extends DialogFragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate: i got called");
-//        if( getArguments() == null) return;
-        mModel = new FoodModel();
-        mModel.parseJson(getArguments().getString(TAG_MODEL));
+
+        mModel = Food.parseJson(getArguments().getString(TAG_MODEL));
         
     }
 
@@ -130,16 +119,16 @@ public class DialogFoodDetailFragment extends DialogFragment{
             @Override
             public void onClick(View v) {
                 DialogFoodDetailFragment.this.dismiss();
-                mActivity.loadStore();
+                mActivity.loadStore(new Store());
             }
         });
     }
 
-    private void registerFromModel(FoodModel foodModel) {
-        mFoodNameTxt.setText(foodModel.getFoodName());
-        mFoodPriceTxt.setText("Rp. "+String.valueOf(foodModel.getFoodPrice()));
-        mStoreNameTxt.setText(foodModel.getStoreName());
-        mStoreAddress.setText(foodModel.getStoreAdress());
+    private void registerFromModel(Food foods) {
+        mFoodNameTxt.setText(foods.getName());
+        mFoodPriceTxt.setText("Rp. "+String.valueOf(foods.getPrice()));
+        mStoreNameTxt.setText(foods.getStore().getName());
+        mStoreAddress.setText(foods.getStore().getAddresss());
     }
 
     private void changeFont() {
@@ -183,17 +172,8 @@ public class DialogFoodDetailFragment extends DialogFragment{
         return  new DialogFoodDetailFragment();
 
     }
-    public static DialogFoodDetailFragment newInstance(FoodModel model) {
-        String sModel = model.toString();
-     DialogFoodDetailFragment f = new DialogFoodDetailFragment();
-     Bundle args = new Bundle();
-     args.putString(TAG_MODEL,sModel);
-     f.setArguments(args);
-    return f;
 
-    }
     public static DialogFoodDetailFragment newInstance(String model) {
-
      DialogFoodDetailFragment f = new DialogFoodDetailFragment();
      Bundle args = new Bundle();
      args.putString(TAG_MODEL,model);

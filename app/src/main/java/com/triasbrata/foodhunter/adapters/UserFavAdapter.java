@@ -1,4 +1,4 @@
-package com.triasbrata.foodhunter.adapter;
+package com.triasbrata.foodhunter.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.triasbrata.foodhunter.R;
-import com.triasbrata.foodhunter.model.FoodModel;
+import com.triasbrata.foodhunter.models.Food;
 
 import java.util.ArrayList;
 
@@ -21,10 +21,10 @@ import java.util.ArrayList;
  */
 public class UserFavAdapter extends RecyclerView.Adapter<UserFavAdapter.ViewHolder> implements View.OnClickListener {
     private static final String TAG = UserFavAdapter.class.getSimpleName() ;
-    ArrayList<ArrayList<FoodModel>> mModel = null;
+    ArrayList<ArrayList<Food>> mModel = null;
     Context mContext = null;
 
-    public UserFavAdapter(ArrayList<ArrayList<FoodModel>> model) {
+    public UserFavAdapter(ArrayList<ArrayList<Food>> model) {
         mModel = model;
     }
 
@@ -38,12 +38,12 @@ public class UserFavAdapter extends RecyclerView.Adapter<UserFavAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder h, int p) {
 
-        for (ArrayList<FoodModel> arrayModel: mModel) {
+        for (ArrayList<Food> arrayModel: mModel) {
             for (int i = 0; i < arrayModel.size(); i++) {
-                FoodModel model = arrayModel.get(i);
+                Food model = arrayModel.get(i);
                 h.onClickListener = model.getListenerHolder();
-                h.txtFoodName.get(i).setText(model.getFoodName());
-                Picasso.with(mContext).load(model.getFoodImage()).into(h.imgViewHolder.get(i));
+                h.txtFoodName.get(i).setText(model.getName());
+                Picasso.with(mContext).load(model.getImage().getPreview()).into(h.imgViewHolder.get(i));
             }
         }
     }
@@ -66,23 +66,6 @@ public class UserFavAdapter extends RecyclerView.Adapter<UserFavAdapter.ViewHold
         public ViewHolder(LinearLayout v) {
 
             super(v);
-//            v.findViewById(R.id.holder_1).setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    onClickListener.onClick(v);
-//                }
-//            });
-//            v.findViewById(R.id.holder_2).setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    onClickListener.onClick(v);
-//                }
-//            });
-//
-//            txtFoodName.add(0,(TextView) v.findViewById(R.id.food_name_1));
-//            txtFoodName.add(1,(TextView) v.findViewById(R.id.food_name_2));
-//            imgViewHolder.add(0,(ImageView) v.findViewById(R.id.image_food_holder_1));
-//            imgViewHolder.add(1,(ImageView) v.findViewById(R.id.image_food_holder_2));
         }
     }
 }

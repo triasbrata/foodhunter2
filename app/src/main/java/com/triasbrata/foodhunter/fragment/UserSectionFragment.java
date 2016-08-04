@@ -14,9 +14,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.triasbrata.foodhunter.DashboardActivity;
 import com.triasbrata.foodhunter.R;
-import com.triasbrata.foodhunter.adapter.PageFragmentAdapter;
+import com.triasbrata.foodhunter.adapters.PageFragmentAdapter;
 import com.triasbrata.foodhunter.fragment.inner.user.ArchivementFragment;
 import com.triasbrata.foodhunter.fragment.inner.user.LikeFragment;
 import com.triasbrata.foodhunter.fragment.interfaces.RecyclerAdapterRefresh;

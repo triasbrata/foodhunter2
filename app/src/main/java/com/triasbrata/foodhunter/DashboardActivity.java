@@ -11,8 +11,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,14 +23,13 @@ import com.gigamole.navigationtabbar.ntb.NavigationTabBar;
 import com.nineoldandroids.animation.Animator;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-import com.triasbrata.foodhunter.adapter.PageFragmentAdapter;
+import com.triasbrata.foodhunter.adapters.PageFragmentAdapter;
 import com.triasbrata.foodhunter.etc.BitmapOperation;
 import com.triasbrata.foodhunter.fragment.FoodSectionFragment;
-import com.triasbrata.foodhunter.fragment.StoreSectionFrament;
+import com.triasbrata.foodhunter.fragment.StoreSectionFragment;
 import com.triasbrata.foodhunter.fragment.PopularFragment;
 import com.triasbrata.foodhunter.fragment.UserSectionFragment;
-import com.triasbrata.foodhunter.fragment.interfaces.RecyclerAdapterRefresh;
-import com.triasbrata.foodhunter.utils.MakeLog;
+import com.triasbrata.foodhunter.models.Store;
 
 
 import java.util.ArrayList;
@@ -74,6 +71,7 @@ public class DashboardActivity extends FragmentActivity{
         public void onPrepareLoad(Drawable placeHolderDrawable) {}
     };
     private PageFragmentAdapter pAdapter;
+    private Store mStore;
 
 
     @Override
@@ -87,19 +85,20 @@ public class DashboardActivity extends FragmentActivity{
 
         aViewPage = (ViewPager) findViewById(R.id.view_pager);
         mFragments.add(0, FoodSectionFragment.newInstance());
-        mFragments.add(1, StoreSectionFrament.newInstance());
+        mFragments.add(1, StoreSectionFragment.newInstance());
         mFragments.add(2, PopularFragment.newInstance());
         mFragments.add(3, UserSectionFragment.newInstance());
         pAdapter = new PageFragmentAdapter(mFragments,getSupportFragmentManager()){
 
             @Override
             public int getItemPosition(Object object) {
-                if(object instanceof  StoreSectionFrament && isDetailStoreView()){
-                    Log.d(TAG, "getItemPosition: StoreSectionFrament");
-                    ((StoreSectionFrament) object).changeViewToDetailStore();
+                if(object instanceof StoreSectionFragment && isDetailStoreView()){
+                    StoreSectionFragment f = ((StoreSectionFragment) object);
+                    f.changeViewToDetailStore(mStore);
                     setDetailStoreView(false);
+                    return super.getItemPosition(object);
                 }
-                return super.getItemPosition(object);
+                return  POSITION_NONE;
             }
         };
         aViewPage.setAdapter(pAdapter);
@@ -144,15 +143,6 @@ public class DashboardActivity extends FragmentActivity{
              @Override
              public void onPageSelected(int position) {
                  pAdapter.notifyDataSetChanged();
-//                 Fragment f = mFragments.get(position);
-//                 try {
-//                     if(isDetailStoreView()){
-//                         ((StoreSectionFrament) f).changeViewToDetailStore();
-//                         setDetailStoreView(false);
-//                     }
-//                 }catch (ClassCastException e){
-//                     Log.d(TAG, "onPageSelected: "+e.getMessage(),e.getCause());
-//                 }
              }
 
              @Override
@@ -227,7 +217,8 @@ public class DashboardActivity extends FragmentActivity{
         super.onBackPressed();
     }
 
-    public void loadStore() {
+    public void loadStore(Store stores) {
+        mStore = stores;
         setDetailStoreView(true);
         aViewPage.setCurrentItem(1);
     }
@@ -239,4 +230,6 @@ public class DashboardActivity extends FragmentActivity{
     public void setDetailStoreView(boolean detailStoreView) {
         IsDetailStoreView = detailStoreView;
     }
+
+
 }
