@@ -1,7 +1,6 @@
 package com.triasbrata.foodhunter.fragment;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -28,7 +27,6 @@ import com.triasbrata.foodhunter.models.Food;
 import com.triasbrata.foodhunter.models.Store;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by triasbrata on 08/07/16.
@@ -74,7 +72,7 @@ public class FoodSectionFragment extends Fragment implements RecyclerAdapterRefr
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return  inflater.inflate(R.layout.fragment_search,container,false);
+        return  inflater.inflate(R.layout.fragment_food_section,container,false);
     }
 
     @Override

@@ -33,6 +33,7 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHo
     private Context mContext;
 
     public FoodListAdapter(ArrayList<Food> fm, Context context) {
+        Log.d(TAG, "FoodListAdapter: "+fm.size());
         mDataset = fm;
         mContext = context;
 

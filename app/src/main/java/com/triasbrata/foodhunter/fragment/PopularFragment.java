@@ -67,7 +67,6 @@ public class PopularFragment extends Fragment implements RecyclerAdapterRefresh 
 
     @Override
     public void dataRefresher() {
-        mAdapter.swap(getFetchFoodModel());
     }
 
     public PopularFragment(){}

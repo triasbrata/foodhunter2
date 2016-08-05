@@ -98,7 +98,7 @@ public class DashboardActivity extends FragmentActivity{
                     setDetailStoreView(false);
                     return super.getItemPosition(object);
                 }
-                return  POSITION_NONE;
+                return POSITION_UNCHANGED;
             }
         };
         aViewPage.setAdapter(pAdapter);

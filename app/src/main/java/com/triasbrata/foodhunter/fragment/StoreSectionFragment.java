@@ -97,7 +97,7 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
 
     @Override
     public void dataRefresher() {
-        mAdapter.swap(getFetchStore());
+
     }
 
     public void changeViewToDetailStore(Store store) {
@@ -150,7 +150,6 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
         }
 
         private void updateRecycleView(RecyclerView rv, ArrayList<Food> foodList) {
-            rv.setBackgroundColor(Color.CYAN);
             rv.swapAdapter(new FoodListAdapter(foodList,getContext()),false);
         }
 

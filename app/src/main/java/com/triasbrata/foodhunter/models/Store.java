@@ -33,10 +33,12 @@ public class Store{
             if(record.has("id"))setId(record.get("id").getAsInt());
             if(record.has("city"))setCity(record.get("city").getAsString());
             if(record.has("operation"))setOperation(new Operation(record.get("operation").getAsJsonObject()));
-            if(record.has("food")){
+            if(record.has("foods")){
                 Food food;
-                for (JsonElement rec :record.get("food").getAsJsonArray()) {
+                Store tmp = this;
+                for (JsonElement rec :record.get("foods").getAsJsonArray()) {
                     food = new Food((JsonObject) rec);
+                    food.setStore(tmp);
                     setFoodList(food);
                 }
             }

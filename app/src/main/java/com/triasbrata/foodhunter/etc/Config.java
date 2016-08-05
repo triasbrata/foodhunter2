@@ -14,7 +14,7 @@ public class Config {
 //        public static String baseUrl = "http://192.168.42.79:3000/";
         public static String baseUrl = "http://10.0.2.2:3000/";
         public static String userLike = "food?fav";
-        private static String storeDetail = "stores/:id?_embed=food";
+        private static String storeDetail = "stores/:id?_embed=foods";
         public static String storeAll = "store";
         public static String foodAll = "foods/:id?_expand=store";
         private static String likeFood = "like";
