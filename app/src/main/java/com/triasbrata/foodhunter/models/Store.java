@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -18,17 +17,19 @@ import java.util.ArrayList;
  */
 public class Store{
     private final String TAG = getClass().getSimpleName();
-    private String name,addresss;
-    private int id;
-    private String city;
+    private String name, address,background,logo,city ="string";
+    private int id = 0;
     private Operation operation = new Operation();
     private ArrayList<Food> food_list = new ArrayList<>();
+    private JsonObject rec = new JsonObject();
 
     public Store(@Nullable  JsonObject record) {
         if(!new JsonObject().equals(record) && record != null){
-
+            setRec(record);
             if(record.has("address")) setAddress(record.get("address").getAsString());
             if(record.has("name"))setName(record.get("name").getAsString());
+            if(record.has("background"))setBackground(record.get("background").getAsString());
+            if(record.has("logo"))setLogo(record.get("logo").getAsString());
             if(record.has("id"))setId(record.get("id").getAsInt());
             if(record.has("city"))setCity(record.get("city").getAsString());
             if(record.has("operation"))setOperation(new Operation(record.get("operation").getAsJsonObject()));
@@ -39,7 +40,7 @@ public class Store{
                     setFoodList(food);
                 }
             }
-            Log.d(TAG, "Store: success casting");
+
         }
     }
 
@@ -75,7 +76,7 @@ public class Store{
     }
 
     public void setAddress(String addresss) {
-        this.addresss = addresss;
+        this.address = addresss;
     }
 
     public ArrayList<Food> getFoodList() {
@@ -86,21 +87,47 @@ public class Store{
         return city;
     }
 
-    public String getAddresss() {
-        return addresss;
+    public String getAddress() {
+        return address;
     }
 
     public Operation getOperation() {
         return operation;
     }
 
+    public JsonObject getRec() {
+        return rec;
+    }
+
+    private void setRec(JsonObject rec) {
+        this.rec = rec;
+    }
+
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
     public class Operation {
 
         private Date open;
         private Date close;
-
+        private JsonObject rec = new JsonObject();
         public Operation(@Nullable JsonObject record) {
+
             if (record != null && !record.equals(new JsonObject())) {
+                setRec(record);
                 @SuppressLint("SimpleDateFormat")
                  SimpleDateFormat simpleDateFormat = new SimpleDateFormat("H:m");
                 try {
@@ -133,6 +160,14 @@ public class Store{
 
         public void setClose(Date close) {
             this.close = close;
+        }
+
+        public JsonObject getRec() {
+            return rec;
+        }
+
+        public void setRec(JsonObject rec) {
+            this.rec = rec;
         }
     }
 }

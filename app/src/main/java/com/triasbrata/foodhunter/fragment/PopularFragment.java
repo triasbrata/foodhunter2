@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.triasbrata.foodhunter.R;
@@ -54,13 +53,6 @@ public class PopularFragment extends Fragment implements RecyclerAdapterRefresh 
 
 
     public void refresh(View view) {
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_search);
-        rv.setLayoutManager(new LinearLayoutManager(getContext()));
-        if(mAdapter == null){
-            mAdapter = new FoodListAdapter(getFetchFoodModel(), getContext());
-        }
-        dataRefresher();
-        rv.setAdapter(mAdapter);
 
     }
     private ArrayList<Food> getFetchFoodModel() {

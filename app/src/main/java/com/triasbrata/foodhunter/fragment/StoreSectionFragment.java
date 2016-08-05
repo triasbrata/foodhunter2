@@ -2,6 +2,7 @@ package com.triasbrata.foodhunter.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +22,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.squareup.picasso.Picasso;
 import com.triasbrata.foodhunter.R;
 import com.triasbrata.foodhunter.adapters.FoodListAdapter;
 import com.triasbrata.foodhunter.adapters.StoreAdapter;
@@ -30,6 +33,8 @@ import com.triasbrata.foodhunter.models.Store;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by triasbrata on 08/07/16.
@@ -71,7 +76,7 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
     }
 
     public void refresh(View view) {
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_search);
+        RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_layout);
         rv.setLayoutManager(new LinearLayoutManager(mContext));
         if(mAdapter == null){
             mAdapter = new StoreAdapter(getFetchStore(), mContext);
@@ -106,31 +111,47 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
                 mStoreAddress,
                 mStoreCity,
                 mStoreOperation;
+        ImageView mBackground;
+        CircleImageView mLogo;
 
         public HandlerStoreDetail(View v,View rootView,Store store) {
             mStoreName = (TextView) v.findViewById(R.id.store_name);
             mStoreAddress = (TextView) v.findViewById(R.id.store_address);
             mStoreCity = (TextView) v.findViewById(R.id.store_city);
             mStoreOperation = (TextView) v.findViewById(R.id.store_operation);
+            mLogo = (CircleImageView) v.findViewById(R.id.store_logo);
+            mBackground = (ImageView) v.findViewById(R.id.store_background);
             changeFont();
             bindDataToView(rootView,store);
 
         }
 
         private void bindDataToView(View rootView, Store store) {
-            @SuppressLint("SimpleDateFormat")
-            SimpleDateFormat sdf = new SimpleDateFormat("H:i");
-            mStoreName.setText(store.getName());
-            mStoreAddress.setText(store.getId());
-            mStoreCity.setText(store.getCity());
-            mStoreOperation.setText(sdf.format(store.getOperation().getOpen())+ " - " + sdf.format(store.getOperation().getClose()));
-            updateRecycleView((RecyclerView) rootView.findViewById(R.id.recycle_view),store.getFoodList());
+            try {
+                @SuppressLint("SimpleDateFormat")
+                SimpleDateFormat sdf = new SimpleDateFormat("H:m");
+                mStoreName.setText(store.getName());
+                mStoreAddress.setText(store.getAddress());
+                mStoreCity.setText(store.getCity());
+                mStoreOperation.setText(sdf.format(store.getOperation().getOpen())+ " - " + sdf.format(store.getOperation().getClose()));
+                Picasso pica = Picasso.with(getContext());
+                pica.load(store.getBackground()).into(mBackground);
+                pica.load(store.getLogo())
+                        .centerCrop()
+                        .resize(100,100)
+                        .noFade()
+                        .into(mLogo);
+
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
+            updateRecycleView((RecyclerView) rootView.findViewById(R.id.rv_layout),store.getFoodList());
 
         }
 
         private void updateRecycleView(RecyclerView rv, ArrayList<Food> foodList) {
-            rv.setAdapter(new FoodListAdapter(foodList,getContext()));
-            rv.setLayoutManager( new LinearLayoutManager(getContext()));
+            rv.setBackgroundColor(Color.CYAN);
+            rv.swapAdapter(new FoodListAdapter(foodList,getContext()),false);
         }
 
         private void changeFont() {

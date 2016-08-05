@@ -26,9 +26,11 @@ public class Food{
     private Store store = new Store();
     private RecycleViewItemOnClick listenerBtnLike,listenerBtnBrowse, listenerCardView;
     private View.OnClickListener listenerHolder;
+    private JsonObject rec = new JsonObject();
 
     public Food(@Nullable  JsonObject record) {
         if(!new JsonObject().equals(record) && record != null){
+            setRec(record);
             if(record.has("id"))setId(record.get("id").getAsInt());
             if(record.has("name"))setName(record.get("name").getAsString());
             if(record.has("price"))setPrice(record.get("price").getAsInt());
@@ -126,13 +128,23 @@ public class Food{
         return new  Food(new JsonParser().parse(string).getAsJsonObject());
     }
 
+    public JsonObject getRec() {
+        return rec;
+    }
+
+    public void setRec(JsonObject rec) {
+        this.rec = rec;
+    }
+
 
     public class Image {
+        private JsonObject rec = new JsonObject();
         private String preview;
         private List<String> slide = new ArrayList<>();
 
         public Image(@Nullable  JsonObject record) {
             if(!new JsonObject().equals(record) && record != null){
+                setRec(record);
                 if(record.has("preview"))setPreview(record.get("preview").getAsString());
                 if(record.has("slide")){
                     for (JsonElement slide: record.get("slide").getAsJsonArray()) {
@@ -161,6 +173,14 @@ public class Food{
 
         public void setSlide(String slide) {
             this.slide.add(slide);
+        }
+
+        public JsonObject getRec() {
+            return rec;
+        }
+
+        public void setRec(JsonObject rec) {
+            this.rec = rec;
         }
     }
 }

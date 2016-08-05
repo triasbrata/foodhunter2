@@ -29,4 +29,5 @@
     <string name="asd">asd</string>
     <string name="btnList">Food</string>
     <string name="notif_detail_store_fail">Toko tidak ditemukan</string>
+    <string name="notif_all_food_fail">Makanan gagal di loading</string>
 </resources>

@@ -8,34 +8,38 @@
     <ImageView
             android:layout_width="match_parent"
             android:scaleType="centerCrop"
+            android:id="@+id/store_background"
             android:src="@drawable/contoh_background"
-            android:layout_height="186dp" />
+            android:layout_height="166dp" />
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="122dp"
+        android:layout_marginTop="102dp"
+        android:paddingRight="17dp"
+        android:paddingLeft="17dp"
         android:orientation="horizontal"
         android:layout_height="wrap_content">
-        <com.gigamole.library.ShadowLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:sl_shadowed="true"
-            app:sl_shadow_angle="90"
-            app:sl_shadow_radius="3dp"
-            app:sl_shadow_distance="3dp"
-            app:sl_shadow_color="#000">
+            <com.dd.ShadowLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:sl_shadowRadius="3dp"
+                app:sl_shadowColor="#3F000000"
+                app:sl_dx="0dp"
+                app:sl_dy="6dp"
+                app:sl_cornerRadius="100dp">
             <de.hdodenhof.circleimageview.CircleImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/profile_image"
+                android:id="@+id/store_logo"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/trias"
                 app:civ_border_width="1dp"
                 app:civ_border_color="#FFF"/>
-        </com.gigamole.library.ShadowLayout>
+            </com.dd.ShadowLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:paddingTop="16dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="26dp"
             android:layout_height="wrap_content">
                 <TextView
                     android:layout_width="wrap_content"

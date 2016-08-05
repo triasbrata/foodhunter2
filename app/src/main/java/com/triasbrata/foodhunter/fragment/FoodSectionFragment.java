@@ -1,6 +1,7 @@
 package com.triasbrata.foodhunter.fragment;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -27,42 +28,18 @@ import com.triasbrata.foodhunter.models.Food;
 import com.triasbrata.foodhunter.models.Store;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by triasbrata on 08/07/16.
  */
 public class FoodSectionFragment extends Fragment implements RecyclerAdapterRefresh {
     private final String TAG = "FoodSectionFragment";
-    private final ArrayList<Food> mFoods = new ArrayList<>();
     private FoodListAdapter mAdapter = null;
     protected final RecycleViewItemOnClick viewListener = new CardView() , btnBrowseListener = new BtnBrowser(), btnLikeListener = new BtnLike();
     private Context mContext;
+    private RecyclerView rv;
 
-    private final FutureCallback<JsonArray> mFuture = new FutureCallback<JsonArray>() {
-        @Override
-        public void onCompleted(Exception e, JsonArray result) {
-            mFoods.clear();
-            if(e != null){
-                Toast.makeText(mContext,e.getMessage(),Toast.LENGTH_LONG).show();
-                return;
-            }
-            try {
-                if( result.size() > 0 ){
-                    for (int i = 0; i < result.size(); i++){
-                        Food model = new Food(result.get(i).getAsJsonObject());;
-                        model.addListenerBtnBrowse(btnBrowseListener);
-                        model.addListenerBtnLike(btnLikeListener);
-                        model.addListenerCardView(viewListener);
-                        mFoods.add(model);
-                    }
-                }
-            }catch (Exception err){
-                Log.w(TAG, "onCompleted: Error  "+err.getMessage());
-                err.printStackTrace();
-            }
-        }
-    };
-    
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,21 +55,20 @@ public class FoodSectionFragment extends Fragment implements RecyclerAdapterRefr
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_search);
+        RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_layout);
         rv.setLayoutManager(new LinearLayoutManager(mContext));
-        mAdapter = new FoodListAdapter(getFetchFoodModel(), mContext);
-        rv.setAdapter(mAdapter);
+        getFetchFoodModel(getContext(),rv);
     }
 
 
-    private ArrayList<Food> getFetchFoodModel() {
+    private void getFetchFoodModel(Context context, RecyclerView rv) {
         String url = Config.URL.food_all();
+        FutureCallback<JsonArray> f = new CallbackFetchingModel(context,rv);
         Log.d(TAG, "getFetchFoodModel: "+url);
         Ion.with(mContext)
                 .load(url)
                 .asJsonArray()
-                .setCallback(mFuture);
-        return mFoods;
+                .setCallback(f);
     }
 
     @Nullable
@@ -103,8 +79,7 @@ public class FoodSectionFragment extends Fragment implements RecyclerAdapterRefr
 
     @Override
     public void dataRefresher() {
-        mAdapter.swap(getFetchFoodModel());
-        mAdapter.notifyDataSetChanged();
+        getFetchFoodModel(getContext(), (RecyclerView) getView().findViewById(R.id.rv_layout));
 
     }
 
@@ -165,7 +140,7 @@ public class FoodSectionFragment extends Fragment implements RecyclerAdapterRefr
     }
 
     private class CardView implements RecycleViewItemOnClick {
-        private final String TAG = CardView.class.getSimpleName();
+        private final String TAG = getClass().getSimpleName();
         protected final FutureCallback<JsonObject> callbackViewListener = new FutureCallback<JsonObject>() {
             @Override
             public void onCompleted(Exception e, JsonObject result) {
@@ -183,9 +158,45 @@ public class FoodSectionFragment extends Fragment implements RecyclerAdapterRefr
             Log.d(TAG, "onClickListener: "+url);
             Ion.with(mContext)
                     .load(url)
+                    .setLogging(TAG,0)
                     .asJsonObject()
                     .setCallback(callbackViewListener);
         }
     }
 
+    private class CallbackFetchingModel implements FutureCallback<JsonArray> {
+        private final Context context;
+        private final RecyclerView rv;
+
+        public CallbackFetchingModel(Context context, RecyclerView rv) {
+            this.context = context;
+            this.rv = rv;
+        }
+        @Override
+        public void onCompleted(Exception e, JsonArray result) {
+            ArrayList<Food> foods = new ArrayList<>();
+            if(e != null){
+                Toast.makeText(mContext,R.string.notif_all_food_fail,Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+                return;
+            }
+            try {
+                if( result.size() > 0 ){
+                    for (int i = 0; i < result.size(); i++){
+                        Food model = new Food(result.get(i).getAsJsonObject());
+                        model.addListenerBtnBrowse(btnBrowseListener);
+                        model.addListenerBtnLike(btnLikeListener);
+                        model.addListenerCardView(viewListener);
+                        foods.add(model);
+                    }
+                }
+            }catch (Exception err){
+                Log.w(TAG, "onCompleted: Error  "+err.getMessage());
+                err.printStackTrace();
+            }
+            mAdapter = new FoodListAdapter(foods, this.context);
+            this.rv.setAdapter(mAdapter);
+            this.rv.getAdapter().notifyDataSetChanged();
+        }
+    }
 }

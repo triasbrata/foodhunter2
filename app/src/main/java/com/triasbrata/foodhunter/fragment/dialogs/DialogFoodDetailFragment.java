@@ -22,14 +22,14 @@ import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
-import com.squareup.picasso.Picasso;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.triasbrata.foodhunter.DashboardActivity;
 import com.triasbrata.foodhunter.R;
+import com.triasbrata.foodhunter.etc.Config;
 import com.triasbrata.foodhunter.models.Food;
 import com.triasbrata.foodhunter.models.Store;
-
-import java.util.HashMap;
-
 
 
 /**
@@ -119,7 +119,11 @@ public class DialogFoodDetailFragment extends DialogFragment{
             @Override
             public void onClick(View v) {
                 DialogFoodDetailFragment.this.dismiss();
-                mActivity.loadStore(new Store());
+                Log.d(TAG, "onClick: "+Config.URL.store_detail(String.valueOf(mModel.getStore().getId())));
+                Ion.with(getContext())
+                    .load(Config.URL.store_detail(String.valueOf(mModel.getStore().getId())))
+                    .asJsonObject()
+                    .setCallback( new CallbackBrowseStore(mActivity));
             }
         });
     }
@@ -128,7 +132,7 @@ public class DialogFoodDetailFragment extends DialogFragment{
         mFoodNameTxt.setText(foods.getName());
         mFoodPriceTxt.setText("Rp. "+String.valueOf(foods.getPrice()));
         mStoreNameTxt.setText(foods.getStore().getName());
-        mStoreAddress.setText(foods.getStore().getAddresss());
+        mStoreAddress.setText(foods.getStore().getAddress());
     }
 
     private void changeFont() {
@@ -182,4 +186,22 @@ public class DialogFoodDetailFragment extends DialogFragment{
 
     }
 
+    private class CallbackBrowseStore implements FutureCallback<JsonObject> {
+
+        private final DashboardActivity mActivity;
+
+        public CallbackBrowseStore(DashboardActivity mActivity) {
+            this.mActivity = mActivity;
+        }
+
+        @Override
+        public void onCompleted(Exception e, JsonObject result) {
+            if(e != null){
+                Toast.makeText(mActivity,R.string.notif_detail_store_fail, Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+            Log.d(TAG, "onCompleted: "+result.toString());
+            mActivity.loadStore(new Store(result));
+        }
+    }
 }

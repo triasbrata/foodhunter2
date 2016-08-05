@@ -58,7 +58,7 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHo
             Food dataFM = mDataset.get(position);
             holder.mTxtFoodName.setText(dataFM.getName());
             holder.mTxtStoreName.setText(dataFM.getStore().getName());
-            holder.mTxtStoreAddress.setText(dataFM.getStore().getAddresss());
+            holder.mTxtStoreAddress.setText(dataFM.getStore().getAddress());
             holder.mTxtPriceTag.setText("Rp. "+String.valueOf(dataFM.getPrice()));
             Drawable likeIcon = dataFM.isUserLike() ?
                     mContext.getResources().getDrawable(R.drawable.like_small_icon):
@@ -72,6 +72,7 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHo
             holder.mIdFood = String.valueOf(dataFM.getId());
         } catch (Exception ignored){
             Log.d(TAG, "onBindViewHolder: "+ignored.getMessage(),ignored.getCause());
+            ignored.printStackTrace();
         }
     }
 
@@ -86,6 +87,7 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHo
 
     @Override
     public int getItemCount() {
+        Log.d(TAG, "getItemCount: "+mDataset.size());
         return mDataset.size();
     }
 
