@@ -71,6 +71,7 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHo
             holder.mBtnBrowseListener = dataFM.getListenerBtnBrowse();
             holder.mCardViewListener = dataFM.getListenerCardView();
             holder.mIdFood = String.valueOf(dataFM.getId());
+            holder.mIdStore = String.valueOf(dataFM.getStore().getId());
         } catch (Exception ignored){
             Log.d(TAG, "onBindViewHolder: "+ignored.getMessage(),ignored.getCause());
             ignored.printStackTrace();
@@ -104,9 +105,10 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHo
                         mTxtStoreName,
                         mTxtStoreAddress,
                         mTxtPriceTag;
-        protected String mIdFood;
+        protected String mIdFood,mIdStore;
         protected LinearLayout mBtnBrowse, mBtnLike;
         protected RecycleViewItemOnClick mBtnBrowseListener, mCardViewListener,mBtnLikeListener;
+
         public ViewHolder(CardView v) {
             super(v);
             mCardView  = v;
@@ -121,7 +123,7 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.ViewHo
             mBtnBrowse.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mBtnBrowseListener.onClickListener(v,mIdFood);
+                    mBtnBrowseListener.onClickListener(v,mIdStore);
                 }
             });
             mCardView.setOnClickListener(new View.OnClickListener() {

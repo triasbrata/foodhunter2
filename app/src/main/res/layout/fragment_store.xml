@@ -5,7 +5,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:background="#ffee33"
-        android:id="@+id/store_frame_layout"
+        android:id="@+id/store_header_layout"
         android:layout_height="@dimen/top_layout_height"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_layout"

@@ -117,8 +117,7 @@ public class FoodSectionFragment extends Fragment implements RecyclerAdapterRefr
                     Toast.makeText(mContext, "Makanan tidak ditemukan", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if( result.equals(new JsonObject()) ){
-
+                if( !result.equals(new JsonObject()) ){
                     Store store = new Store(result);
                     ((DashboardActivity) getActivity()).loadStore(store);
 
@@ -129,11 +128,11 @@ public class FoodSectionFragment extends Fragment implements RecyclerAdapterRefr
         public void onClickListener(final View v, final String idItem) {
             mView = v;
             String url = Config.URL.store_detail(idItem);
+            Log.d(TAG, "onClickListener: "+url);
             Ion.with(mContext)
                     .load(url)
                     .asJsonObject()
                     .setCallback(callbackViewListener);
-            Toast.makeText(mContext, "Button Browser clicked", Toast.LENGTH_SHORT).show();
         }
     }
 

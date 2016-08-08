@@ -73,7 +73,7 @@ public class LikeFragment extends android.support.v4.app.Fragment {
     }
 
     private ArrayList<ArrayList<Food>> fetchingData() {
-        String url = URL.makeUrl(URL.userLike);
+        String url = URL.userLike();
         Log.d(TAG, "fetchingData: "+url);
         Ion.with(mContext)
                 .load(url)

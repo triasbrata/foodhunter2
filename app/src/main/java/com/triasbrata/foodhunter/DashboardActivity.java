@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -54,7 +55,8 @@ public class DashboardActivity extends FragmentActivity{
                 builder.selectedIcon(getResources().getDrawable(R.drawable.nav_user_section_normal));
             }
             models.add(builder.build());
-            navigationTabBar.setModels(models);
+            showNTB();
+            laodView();
         }
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -81,6 +83,7 @@ public class DashboardActivity extends FragmentActivity{
 
         textLoading = (TextView) findViewById(R.id.text_loading);
         textLoading.setTypeface(Typeface.createFromAsset(getAssets(),"font/avenir-next-lt-pro/AvenirNextLTPro-Demi.otf"));
+        loadingLayout = (LinearLayout) findViewById(R.id.loading_layout);
 
 
         aViewPage = (ViewPager) findViewById(R.id.view_pager);
@@ -104,13 +107,8 @@ public class DashboardActivity extends FragmentActivity{
         aViewPage.setAdapter(pAdapter);
         textLoading.setText("Preparing for you...");
         makeNavigationBottom();
-        makeSlideUpWindow();
 
     }
-
-    private void makeSlideUpWindow() {
-    }
-
     private void userNavigate() {
         String url = "https://scontent-sit4-1.xx.fbcdn.net/v/t1.0-1/p320x320/13428361_1323574151004020_555344963131837310_n.jpg?oh=a416a796466d3dd0ea90f3a34bb0a993&oe=57F4FDFC";
         models.add(
@@ -132,7 +130,6 @@ public class DashboardActivity extends FragmentActivity{
          navigationTabBar.setIsTitled(false);
          navigationTabBar.setIsTinted(false);
          navigationTabBar.setIsBadgeUseTypeface(false);
-         navigationTabBar.setViewPager(aViewPage);
          navigationTabBar.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
              @Override
@@ -162,17 +159,13 @@ public class DashboardActivity extends FragmentActivity{
                          .selectedIcon(getResources().getDrawable(R.drawable.nav_shop_section))
                          .build()
          );
-         if(isLogged){
-            userNavigate();
+         showNTB();
+         if(isLogged) {
+             userNavigate();
+         }else{
+             laodView();
          }
-         navigationTabBar.setModels(models);
-         navigationTabBar.postDelayed(new Runnable() {
-             @Override
-             public void run() {
-                pushOutLoading();
-                navigationTabBar.show();
-             }
-         },300);
+
 
 
 
@@ -181,8 +174,20 @@ public class DashboardActivity extends FragmentActivity{
      }
     }
 
-    private void pushOutLoading() {
-        loadingLayout = (LinearLayout) findViewById(R.id.loading_layout);
+    private void showNTB() {
+        navigationTabBar.setModels(models);
+        navigationTabBar.setViewPager(aViewPage,0);
+        navigationTabBar.show();
+
+    }
+
+    private void laodView() {
+        aViewPage.setCurrentItem(0);
+        pushOutLoading();
+
+    }
+
+    public void pushOutLoading() {
         YoYo.with(Techniques.FadeOut)
                 .delay(1000)
                 .duration(1000)
@@ -209,7 +214,6 @@ public class DashboardActivity extends FragmentActivity{
                     }
                 })
                 .playOn(loadingLayout);
-
     }
 
     @Override
@@ -218,9 +222,9 @@ public class DashboardActivity extends FragmentActivity{
     }
 
     public void loadStore(Store stores) {
-        mStore = stores;
-        setDetailStoreView(true);
-        aViewPage.setCurrentItem(1);
+            loadingLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT,1.0f));
+            loadingLayout.setVisibility(View.VISIBLE);
+            YoYo.with(Techniques.FadeIn).withListener(new YoyoListener(stores)).playOn(loadingLayout);
     }
 
     public boolean isDetailStoreView() {
@@ -232,4 +236,35 @@ public class DashboardActivity extends FragmentActivity{
     }
 
 
+    private class YoyoListener implements  Animator.AnimatorListener {
+        private final Store store;
+
+        public YoyoListener(Store stores) {
+            this.store = stores;
+        }
+
+        @Override
+        public void onAnimationStart(Animator animation) {
+            Log.d(TAG, "onAnimationStart: called");
+            setDetailStoreView(true);
+            mStore = store;
+            aViewPage.setCurrentItem(1);
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+
+        }
+    }
 }

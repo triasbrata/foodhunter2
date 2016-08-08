@@ -1,5 +1,7 @@
 package com.triasbrata.foodhunter.etc;
 
+import android.util.Log;
+
 /**
  * Created by triasbrata on 07/07/16.
  */
@@ -11,29 +13,35 @@ public class Config {
     }
 
     public static class URL {
-//        public static String baseUrl = "http://192.168.42.79:3000/";
-        public static String baseUrl = "http://10.0.2.2:3000/";
-        public static String userLike = "food?fav";
-        private static String storeDetail = "stores/:id?_embed=foods";
-        public static String storeAll = "store";
-        public static String foodAll = "foods/:id?_expand=store";
+        private static final String TAG = Config.URL.class.getSimpleName();
+        //        public static String baseUrl = "http://192.168.42.79:3000/";
+        private static String host =  "http://10.0.2.2";
+        private static String hostLocal =  "http://localhost";
+        private static String port =  "3000";
+        private static String baseUrl = host+":"+port+"/";
+        private static String userLike = "food?fav";
+        private static String store = "stores/:id?_embed=foods";
+        private static String foods = "foods/:id?_expand=store";
         private static String likeFood = "like";
 
         public static String makeUrl (String s){
-            return  baseUrl +s;
+            String o = baseUrl +s;
+            Log.d(TAG, "makeUrl: "+o.replace(host,hostLocal));
+            return  o;
+
         }
 
         public static String store_detail(String idItem) {
-            return makeUrl(storeDetail.replace(":id",idItem));
+            return makeUrl(store.replace(":id",idItem));
         }
 
         public static String store_all() {
-            return  makeUrl(storeAll);
+            return  makeUrl(store.replace("/:id",""));
         }
 
         public static String food_detail(String idItem) {
 
-            return makeUrl(foodAll.replace(":id",idItem));
+            return makeUrl(foods.replace(":id",idItem));
         }
 
         public static String like_food(String idItem) {
@@ -41,7 +49,11 @@ public class Config {
         }
 
         public static String food_all() {
-            return makeUrl(foodAll.replace("/:id",""));
+            return makeUrl(foods.replace("/:id",""));
+        }
+
+        public static String userLike() {
+            return userLike;
         }
     }
 }

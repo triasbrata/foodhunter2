@@ -2,8 +2,9 @@ package com.triasbrata.foodhunter.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,12 +18,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.ImageViewBitmapInfo;
 import com.koushikdutta.ion.Ion;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+import com.triasbrata.foodhunter.DashboardActivity;
 import com.triasbrata.foodhunter.R;
 import com.triasbrata.foodhunter.adapters.FoodListAdapter;
 import com.triasbrata.foodhunter.adapters.StoreAdapter;
@@ -78,21 +83,16 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
     public void refresh(View view) {
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_layout);
         rv.setLayoutManager(new LinearLayoutManager(mContext));
-        if(mAdapter == null){
-            mAdapter = new StoreAdapter(getFetchStore(), mContext);
-        }
-        dataRefresher();
+        getFetchStore(rv);
         rv.setAdapter(mAdapter);
 
     }
-    private ArrayList<Store> getFetchStore() {
+    private void getFetchStore(RecyclerView rv) {
         String url = Config.URL.store_all();
-        ArrayList<Store> out = new ArrayList<>();
         Ion.with(mContext)
                 .load(url)
                 .asJsonArray()
-                .setCallback(mCallback);
-        return mStores;
+                .setCallback(new StoreFetchCallback(rv));;
     }
 
     @Override
@@ -101,7 +101,11 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
     }
 
     public void changeViewToDetailStore(Store store) {
-        new HandlerStoreDetail(getActivity().getLayoutInflater().inflate(R.layout.store_detail_header, (ViewGroup) getView().findViewById(R.id.store_frame_layout)),getView(),store);
+
+        View v = (getView().findViewById(R.id.store_detail_header) != null)?
+                         getView().findViewById(R.id.store_detail_header):
+                    getActivity().getLayoutInflater().inflate(R.layout.store_detail_header, (ViewGroup) getView().findViewById(R.id.store_header_layout));
+        new HandlerStoreDetail(v,getView(),store);
 
     }
 
@@ -111,8 +115,9 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
                 mStoreAddress,
                 mStoreCity,
                 mStoreOperation;
-        ImageView mBackground;
+        KenBurnsView mBackground;
         CircleImageView mLogo;
+        boolean islogoLoaded = false, isBackgroundLoaded = false;
 
         public HandlerStoreDetail(View v,View rootView,Store store) {
             mStoreName = (TextView) v.findViewById(R.id.store_name);
@@ -120,7 +125,7 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
             mStoreCity = (TextView) v.findViewById(R.id.store_city);
             mStoreOperation = (TextView) v.findViewById(R.id.store_operation);
             mLogo = (CircleImageView) v.findViewById(R.id.store_logo);
-            mBackground = (ImageView) v.findViewById(R.id.store_background);
+            mBackground = (KenBurnsView) v.findViewById(R.id.store_background);
             changeFont();
             bindDataToView(rootView,store);
 
@@ -128,6 +133,7 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
 
         private void bindDataToView(View rootView, Store store) {
             try {
+                Log.d(TAG, "bindDataToView: "+store.getRec().toString());
                 @SuppressLint("SimpleDateFormat")
                 SimpleDateFormat sdf = new SimpleDateFormat("H:m");
                 mStoreName.setText(store.getName());
@@ -135,12 +141,11 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
                 mStoreCity.setText(store.getCity());
                 mStoreOperation.setText(sdf.format(store.getOperation().getOpen())+ " - " + sdf.format(store.getOperation().getClose()));
                 Picasso pica = Picasso.with(getContext());
-                pica.load(store.getBackground()).into(mBackground);
                 pica.load(store.getLogo())
                         .centerCrop()
                         .resize(100,100)
                         .noFade()
-                        .into(mLogo);
+                        .into(new TargetCallBack(mLogo,store.getBackground()));
 
             }catch (NullPointerException e){
                 e.printStackTrace();
@@ -161,29 +166,78 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
             mStoreCity.setTypeface(tfR);
             mStoreOperation.setTypeface(tfR);
         }
-    }
 
-    private FutureCallback<JsonArray> mCallback = new FutureCallback<JsonArray>() {
-        ArrayList<Store> mStores = new ArrayList<>();
+        private class TargetCallBack implements Target {
+
+            private final ImageView v;
+            private final String b
+                    ;
+
+            public TargetCallBack(ImageView view,String bg) {
+                v = view;
+                b = bg;
+
+            }
+
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                if(b != "") {
+                    v.setImageBitmap(bitmap);
+                    islogoLoaded = true;
+                    Picasso.with(getContext()).load(b).into(new TargetCallBack(mBackground,""));
+                }else{
+                    v.setImageBitmap(bitmap);
+                    isBackgroundLoaded = true;
+                }
+                Log.d(TAG, "onBitmapLoaded: Background"+ isBackgroundLoaded);
+                Log.d(TAG, "onBitmapLoaded: Logo : "+ islogoLoaded);
+                if(isBackgroundLoaded && islogoLoaded){
+                    ((DashboardActivity) getActivity()).pushOutLoading();
+                }
+
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        }
+    }
+    private class StoreFetchCallback implements FutureCallback<JsonArray> {
+        private final RecyclerView rv;
+
+        public StoreFetchCallback(RecyclerView rv) {
+            this.rv = rv;
+        }
+
         @Override
         public void onCompleted(Exception e, JsonArray result) {
             if(e != null){
-                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), R.string.notif_all_store_fail, Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
                 return;
             }
-            mStores.clear();
-            try {
-
-                if( result.size() > 0  ){
-                    for (JsonElement row: result) {
-                        Store store = new Store((JsonObject) row);
-                        mStores.add(store);
-
+            if(result.size() > 0){
+                ArrayList<Store> stores = new ArrayList<>();
+                for (JsonElement rec:result) {
+                    try {
+                        stores.add(new Store((JsonObject) rec));
+                    }catch (Exception error){
+                        error.printStackTrace();
                     }
                 }
-            } catch (Exception err){
-                Log.d(TAG, "onCompleted: "+err.getMessage(),err.getCause());
+//                if(rv.getAdapter() == null){
+//                    rv.setAdapter(new StoreAdapter(stores,getContext()));
+//                }else {
+//                    rv.swapAdapter(new StoreAdapter(stores, getContext()),false);
+//                }
+                rv.swapAdapter(new StoreAdapter(stores, getContext()),false);
             }
         }
-    };
+    }
 }
