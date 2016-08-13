@@ -221,10 +221,11 @@ public class DashboardActivity extends FragmentActivity{
         super.onBackPressed();
     }
 
-    public void loadStore(Store stores) {
-            loadingLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT,1.0f));
-            loadingLayout.setVisibility(View.VISIBLE);
-            YoYo.with(Techniques.FadeIn).withListener(new YoyoListener(stores)).playOn(loadingLayout);
+    public void loadStore(Store store) {
+        setDetailStoreView(true);
+        mStore = store;
+        aViewPage.setCurrentItem(1);
+
     }
 
     public boolean isDetailStoreView() {
@@ -233,38 +234,5 @@ public class DashboardActivity extends FragmentActivity{
 
     public void setDetailStoreView(boolean detailStoreView) {
         IsDetailStoreView = detailStoreView;
-    }
-
-
-    private class YoyoListener implements  Animator.AnimatorListener {
-        private final Store store;
-
-        public YoyoListener(Store stores) {
-            this.store = stores;
-        }
-
-        @Override
-        public void onAnimationStart(Animator animation) {
-            Log.d(TAG, "onAnimationStart: called");
-            setDetailStoreView(true);
-            mStore = store;
-            aViewPage.setCurrentItem(1);
-
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationCancel(Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationRepeat(Animator animation) {
-
-        }
     }
 }

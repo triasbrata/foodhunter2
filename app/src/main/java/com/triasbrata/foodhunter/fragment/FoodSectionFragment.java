@@ -36,7 +36,6 @@ public class FoodSectionFragment extends Fragment implements RecyclerAdapterRefr
     private FoodListAdapter mAdapter = null;
     protected final RecycleViewItemOnClick viewListener = new CardView() , btnBrowseListener = new BtnBrowser(), btnLikeListener = new BtnLike();
     private Context mContext;
-    private RecyclerView rv;
 
 
     @Override

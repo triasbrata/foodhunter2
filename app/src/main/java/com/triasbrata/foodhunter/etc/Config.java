@@ -15,7 +15,8 @@ public class Config {
     public static class URL {
         private static final String TAG = Config.URL.class.getSimpleName();
         //        public static String baseUrl = "http://192.168.42.79:3000/";
-        private static String host =  "http://10.0.2.2";
+        private static String host =  "http://192.168.42.237";
+//        private static String host =  "http://10.0.2.2";
         private static String hostLocal =  "http://localhost";
         private static String port =  "3000";
         private static String baseUrl = host+":"+port+"/";

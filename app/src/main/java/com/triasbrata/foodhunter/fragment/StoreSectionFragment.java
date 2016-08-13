@@ -69,7 +69,9 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        refresh(view);
+        RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_layout);
+        rv.setLayoutManager(new LinearLayoutManager(mContext));
+        getFetchStore(rv);
     }
 
     @Override
@@ -78,14 +80,6 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
             mContext = getContext();
         }
         super.onCreate(savedInstanceState);
-    }
-
-    public void refresh(View view) {
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_layout);
-        rv.setLayoutManager(new LinearLayoutManager(mContext));
-        getFetchStore(rv);
-        rv.setAdapter(mAdapter);
-
     }
     private void getFetchStore(RecyclerView rv) {
         String url = Config.URL.store_all();
@@ -155,7 +149,7 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
         }
 
         private void updateRecycleView(RecyclerView rv, ArrayList<Food> foodList) {
-            rv.swapAdapter(new FoodListAdapter(foodList,getContext()),false);
+            rv.setAdapter(new FoodListAdapter(foodList,getContext()));
         }
 
         private void changeFont() {
@@ -189,11 +183,9 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
                     v.setImageBitmap(bitmap);
                     isBackgroundLoaded = true;
                 }
-                Log.d(TAG, "onBitmapLoaded: Background"+ isBackgroundLoaded);
-                Log.d(TAG, "onBitmapLoaded: Logo : "+ islogoLoaded);
-                if(isBackgroundLoaded && islogoLoaded){
-                    ((DashboardActivity) getActivity()).pushOutLoading();
-                }
+//                if(isBackgroundLoaded && islogoLoaded){
+//                    ((DashboardActivity) getActivity()).pushOutLoading();
+//                }
 
             }
 
@@ -236,7 +228,8 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
 //                }else {
 //                    rv.swapAdapter(new StoreAdapter(stores, getContext()),false);
 //                }
-                rv.swapAdapter(new StoreAdapter(stores, getContext()),false);
+                    rv.setAdapter(new StoreAdapter(stores,getContext()));
+
             }
         }
     }

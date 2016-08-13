@@ -6,12 +6,32 @@
     android:layout_width="match_parent"
     android:background="@color/white"
     android:layout_height="match_parent">
+
     <com.flaviofaria.kenburnsview.KenBurnsView
             android:layout_width="match_parent"
             android:scaleType="centerCrop"
             android:id="@+id/store_background"
             android:src="@drawable/contoh_background"
             android:layout_height="166dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:padding="17dp"
+        android:gravity="center_vertical"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:src="@drawable/back"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_marginLeft="17dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Back"/>
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_marginTop="102dp"

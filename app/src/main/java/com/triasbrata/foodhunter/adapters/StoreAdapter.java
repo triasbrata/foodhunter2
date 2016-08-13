@@ -1,6 +1,9 @@
 package com.triasbrata.foodhunter.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,17 +14,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.triasbrata.foodhunter.DashboardActivity;
 import com.triasbrata.foodhunter.R;
 import com.triasbrata.foodhunter.adapters.interfaces.RecycleViewItemOnClick;
 import com.triasbrata.foodhunter.etc.Config;
-import com.triasbrata.foodhunter.models.Food;
 import com.triasbrata.foodhunter.models.Store;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -44,11 +48,20 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        Store store = mStore.get(position);
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat sdf = new SimpleDateFormat("H:m");
+        holder.mIdFood = String.valueOf(store.getId());
+        holder.mTxtCity.setText(store.getCity());
+        holder.mTxtName.setText(store.getName());
+        holder.mTxtAddress.setText(store.getAddress());
+        holder.mTxtOperation.setText(sdf.format(store.getOperation().getOpen())+ " - " + sdf.format(store.getOperation().getClose()));
+        Picasso.with(mContext).load(store.getLogo()).centerCrop().resize(100,100).into(holder.mStoreImgHolder);
         holder.mCardViewListener = new RecycleViewItemOnClick() {
             @Override
-            public void onClickListener(View v, String store_id) {
+            public void onClickListener(View v, String idItem) {
                 Ion.with(mContext)
-                        .load(Config.URL.store_detail(store_id))
+                        .load(Config.URL.store_detail(idItem))
                         .asJsonObject()
                         .setCallback(new ResponseStoreDetail(mContext));
             }
@@ -68,19 +81,19 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder> 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         protected ImageView mStoreImgHolder;
-        protected TextView mTxtName,
-                mTxtStoreName,
-                mTxtCity,
-                mTxtOperation;
+        protected TextView mTxtName;
+        protected TextView mTxtAddress;
+        protected TextView mTxtCity;
+        protected TextView mTxtOperation;
         protected String mIdFood;
         protected RecycleViewItemOnClick mCardViewListener;
         public ViewHolder(CardView v) {
             super(v);
-            mStoreImgHolder = (ImageView) v.findViewById(R.id.image_food);
-            mTxtName = (TextView) v.findViewById(R.id.title_food);
-            mTxtCity = (TextView) v.findViewById(R.id.address_store);
-            mTxtStoreName = (TextView) v.findViewById(R.id.store_food);
-            mTxtOperation = (TextView) v.findViewById(R.id.harga_food);
+            mStoreImgHolder = (ImageView) v.findViewById(R.id.image);
+            mTxtName = (TextView) v.findViewById(R.id.name);
+            mTxtCity = (TextView) v.findViewById(R.id.city);
+            mTxtAddress = (TextView) v.findViewById(R.id.address);
+            mTxtOperation = (TextView) v.findViewById(R.id.operation);
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -102,7 +115,7 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder> 
         public void onCompleted(Exception e, JsonObject result) {
             try {
 
-                if( result.equals(new JsonObject()) ){
+                if( !result.equals(new JsonObject()) ){
                     Store store  = new Store(result);
                     mActivity.loadStore(store);
                 }
@@ -114,4 +127,5 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder> 
 
         }
     }
+
 }
