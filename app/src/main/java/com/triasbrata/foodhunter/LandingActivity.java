@@ -1,14 +1,22 @@
 package com.triasbrata.foodhunter;
 
 
+import android.content.Context;
+import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.triasbrata.foodhunter.etc.CheckingGPS;
 import com.triasbrata.foodhunter.fragment.LandingFragment;
 import com.triasbrata.foodhunter.fragment.LoginFragment;
 import com.triasbrata.foodhunter.fragment.RegisterFragment;
@@ -39,8 +47,14 @@ public class LandingActivity extends FragmentActivity {
         setContentView(R.layout.activity_landing);
         aLandingFragment = LandingFragment.newInstance();
         openFragment(aLandingFragment);
+        //new CheckingGPS((LocationManager) getSystemService(Context.LOCATION_SERVICE),this).invoke();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //new CheckingGPS((LocationManager) getSystemService(Context.LOCATION_SERVICE),this).invoke();
+    }
     private void openFragment(final Fragment fragment)   {
         System.out.println(fragment.getClass());
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
@@ -102,4 +116,5 @@ public class LandingActivity extends FragmentActivity {
         isRegisterViewed = true;
         openFragment(RegisterFragment.newInstance());
     }
+
 }

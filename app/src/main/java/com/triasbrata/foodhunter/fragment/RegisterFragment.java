@@ -4,7 +4,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     LandingActivity aActivity;
     private EditText txtUsername;
     private EditText txtPassword;
-    private EditText txtTownBase;
+    private EditText txtNama;
     private EditText txtEmail;
 
     public RegisterFragment() {
@@ -47,7 +46,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         btnBack.setOnClickListener(this);
         txtUsername = (EditText) view.findViewById(R.id.txtUsername);
         txtPassword = (EditText) view.findViewById(R.id.txtPassword);
-        txtTownBase = (EditText) view.findViewById(R.id.txtTownBase);
+        txtNama = (EditText) view.findViewById(R.id.txtNama);
         txtEmail = (EditText) view.findViewById(R.id.txtEmail);
         Typeface tfDc = Typeface.createFromAsset(getActivity().getAssets(),"font/avenir-next-lt-pro/AvenirNextLTPro-DemiCn.otf");
         Typeface tfM = Typeface.createFromAsset(getActivity().getAssets(),"font/avenir-next-lt-pro/AvenirNextLTPro-MediumCn.otf");
@@ -55,7 +54,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         btnRegister.setTypeface(tfDc);
         txtUsername.setTypeface(tfM);
         txtPassword.setTypeface(tfM);
-        txtTownBase.setTypeface(tfM);
+        txtNama.setTypeface(tfM);
         txtEmail.setTypeface(tfM);
         aActivity = (LandingActivity) getActivity();
     }
@@ -79,13 +78,10 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     }
 
     private void mBtnRegisterListener() {
-
-
-        String url = Config.base_url + "register";
             JsonObject userCredential = new JsonObject();
             userCredential.addProperty("username", txtUsername.getText().toString());
             userCredential.addProperty("password", txtPassword.getText().toString());
-            userCredential.addProperty("town_base", txtTownBase.getText().toString());
+            userCredential.addProperty("nama", txtNama.getText().toString());
             userCredential.addProperty("email", txtEmail.getText().toString());
             final MaterialDialog md = new MaterialDialog.Builder(aActivity)
                     .content(R.string.please_wait)
@@ -96,15 +92,14 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                     .progress(true, 0)
                     .show();
             Ion.with(getContext())
-                    .load(url)
+                    .load(Config.URL.register())
                     .setJsonObjectBody(userCredential)
                     .asJsonObject()
                     .setCallback(new FutureCallback<JsonObject>() {
                         @Override
-                        public void onCompleted(Exception e, JsonObject result) {
-                            Log.d(TAG, "onCompleted: ", new Throwable(e.getMessage(), e.getCause()));
+                        public void onCompleted(@Nullable Exception e, JsonObject result) {
                             md.dismiss();
-                            if (e != null) {
+                            if (e instanceof Exception) {
                                 new MaterialDialog.Builder(aActivity)
                                         .backgroundColorRes(R.color.white)
                                         .contentColorRes(R.color.textDark)

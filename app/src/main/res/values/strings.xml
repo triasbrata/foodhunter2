@@ -11,8 +11,8 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="please_wait">Please wait...</string>
-    <string name="town_base">Town Base</string>
-    <string name="email">E-Mail</string>
+    <string name="nama_user">Nama Pengguna</string>
+    <string name="email">E-Mail Pengguna</string>
     <string name="btnBack">Back</string>
     <string name="title_activity_dashboard">DashboardActivity</string>
 

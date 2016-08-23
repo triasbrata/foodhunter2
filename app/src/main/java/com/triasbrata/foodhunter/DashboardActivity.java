@@ -21,11 +21,13 @@ import android.widget.TextView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.gigamole.navigationtabbar.ntb.NavigationTabBar;
+import com.mapbox.mapboxsdk.MapboxAccountManager;
 import com.nineoldandroids.animation.Animator;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.triasbrata.foodhunter.adapters.PageFragmentAdapter;
 import com.triasbrata.foodhunter.etc.BitmapOperation;
+import com.triasbrata.foodhunter.etc.Config;
 import com.triasbrata.foodhunter.fragment.FoodSectionFragment;
 import com.triasbrata.foodhunter.fragment.StoreSectionFragment;
 import com.triasbrata.foodhunter.fragment.PopularFragment;
@@ -79,6 +81,7 @@ public class DashboardActivity extends FragmentActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MapboxAccountManager.start(this, Config.MapBoxToken);
         setContentView(R.layout.dashboard_activity);
 
         textLoading = (TextView) findViewById(R.id.text_loading);

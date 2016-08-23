@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.triasbrata.foodhunter.adapters.interfaces.RecycleViewItemOnClick;
+import com.triasbrata.foodhunter.models.interfaces.ModelRecord;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 /**
  * Created by triasbrata on 09/07/16.
  */
-public class Food{
+public class Food implements ModelRecord {
     private String TAG = getClass().getSimpleName();
 
     private String name;
@@ -137,7 +138,7 @@ public class Food{
     }
 
 
-    public class Image {
+    public class Image implements ModelRecord {
         private JsonObject rec = new JsonObject();
         private String preview;
         private List<String> slide = new ArrayList<>();

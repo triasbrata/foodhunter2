@@ -1,9 +1,16 @@
 package com.triasbrata.foodhunter.fragment;
 
 import android.content.Context;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,39 +19,61 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.mapbox.mapboxsdk.annotations.Marker;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.constants.Style;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.SupportMapFragment;
 import com.triasbrata.foodhunter.DashboardActivity;
 import com.triasbrata.foodhunter.R;
 import com.triasbrata.foodhunter.adapters.FoodListAdapter;
 import com.triasbrata.foodhunter.adapters.interfaces.RecycleViewItemOnClick;
 import com.triasbrata.foodhunter.etc.Config;
 import com.triasbrata.foodhunter.fragment.dialogs.DialogFoodDetailFragment;
+import com.triasbrata.foodhunter.fragment.inner.MapBoxFragment;
 import com.triasbrata.foodhunter.fragment.interfaces.RecyclerAdapterRefresh;
 import com.triasbrata.foodhunter.models.Food;
 import com.triasbrata.foodhunter.models.Store;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by triasbrata on 08/07/16.
  */
-public class FoodSectionFragment extends Fragment implements RecyclerAdapterRefresh {
+public class FoodSectionFragment extends Fragment implements
+        RecyclerAdapterRefresh,
+        LocationListener {
     private final String TAG = "FoodSectionFragment";
     private FoodListAdapter mAdapter = null;
-    protected final RecycleViewItemOnClick viewListener = new CardView() , btnBrowseListener = new BtnBrowser(), btnLikeListener = new BtnLike();
+    protected final RecycleViewItemOnClick viewListener = new CardView(), btnBrowseListener = new BtnBrowser(), btnLikeListener = new BtnLike();
     private Context mContext;
-
+    protected SupportMapFragment mapFragment;
+    private  LocationManager gpsService;
+    private String gpsProvider;
+    protected MapboxMap mMapBoxMap;
+    private HashMap<Long, Food> mListLinkerMarkerAndFood = new HashMap<>();
+    private LatLng userLocaltion;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        if(mContext == null) mContext = getContext();
+        if (mContext == null) mContext = getContext();
+
         super.onCreate(savedInstanceState);
     }
 
-    public FoodSectionFragment(){}
+    public FoodSectionFragment() {
+    }
+
     public static FoodSectionFragment newInstance() {
         return new FoodSectionFragment();
     }
@@ -52,15 +81,82 @@ public class FoodSectionFragment extends Fragment implements RecyclerAdapterRefr
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        gpsService = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        gpsProvider = gpsService.getBestProvider(new Criteria(), false);
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_layout);
-        rv.setLayoutManager(new LinearLayoutManager(mContext));
-        getFetchFoodModel(getContext(),rv);
+        rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        makeMap(savedInstanceState,rv);
+//        new CheckingGPS((LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE),getActivity()).invoke();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        gpsService.requestLocationUpdates(gpsProvider, 400, 1, this);
+        if(mapFragment != null) mapFragment.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        gpsService.removeUpdates(this);
+    }
+
+    private void makeMap(Bundle savedInstanceState, final RecyclerView rv) {
+        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentByTag("com.mapbox.map");
+        if (mapFragment == null) {
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            Location position = gpsService.getLastKnownLocation(gpsProvider);
+            //            if(position == null){
+                userLocaltion = new LatLng(-0.470402,117.151568);
+//            }else{
+//                location = new LatLng(position);
+//            }
+
+            MapboxMapOptions options = new MapboxMapOptions();
+            options.styleUrl(Style.LIGHT);
+            options.camera(new CameraPosition.Builder()
+                    .target(userLocaltion)
+                    .zoom(14)
+                    .build());
+            mapFragment = MapBoxFragment.newInstance(options);
+            transaction.add(R.id.map_view,mapFragment,"com.mapbox.map");
+            transaction.commit();
+        }
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(MapboxMap mapboxMap) {
+                mapboxMap.setOnCameraChangeListener(new MapboxMap.OnCameraChangeListener() {
+                    @Override
+                    public void onCameraChange(CameraPosition position) {
+                        Log.d(TAG, "onCameraChange: called");
+                    }
+                });
+                mapboxMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(@NonNull Marker marker) {
+                        Log.d(TAG, "onMarkerClick: called");
+                        Food food = mListLinkerMarkerAndFood.get(marker.getId());
+                        DialogFoodDetailFragment f =  DialogFoodDetailFragment.newInstance(food.getRec().toString());
+                        f.show(((DashboardActivity) mContext).getSupportFragmentManager(),"");
+                        return false;
+                    }
+                });
+                mapboxMap.setOnCameraChangeListener(new MapboxMap.OnCameraChangeListener() {
+                    @Override
+                    public void onCameraChange(CameraPosition position) {
+                        Log.d(TAG, "onCameraChange: "+position.target.toString());
+                    }
+                });
+                getFetchFoodModel(getContext(), rv,mapboxMap);
+            }
+        });
     }
 
 
-    private void getFetchFoodModel(Context context, RecyclerView rv) {
+    private void getFetchFoodModel(Context context, RecyclerView rv, MapboxMap mapboxMap) {
         String url = Config.URL.food_all();
-        FutureCallback<JsonArray> f = new CallbackFetchingModel(context,rv);
+        FutureCallback<JsonArray> f = new CallbackFetchingModel(context,rv, mapboxMap);
         Log.d(TAG, "getFetchFoodModel: "+url);
         Ion.with(mContext)
                 .load(url)
@@ -76,8 +172,29 @@ public class FoodSectionFragment extends Fragment implements RecyclerAdapterRefr
 
     @Override
     public void dataRefresher() {
-        getFetchFoodModel(getContext(), (RecyclerView) getView().findViewById(R.id.rv_layout));
+        //getFetchFoodModel(getContext(), (RecyclerView) getView().findViewById(R.id.rv_layout), mapboxMap);
 
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        Log.d(TAG, "onProviderEnabled: "+provider);
+        new MaterialDialog.Builder(getActivity()).content("GPS Aktif dengan" + provider).show();
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        Log.d(TAG, "onProviderDisabled: "+provider);
+        new MaterialDialog.Builder(getActivity()).content("GPS Aktif dengan" + provider).show();
     }
 
     private class BtnLike implements RecycleViewItemOnClick {
@@ -163,14 +280,17 @@ public class FoodSectionFragment extends Fragment implements RecyclerAdapterRefr
     private class CallbackFetchingModel implements FutureCallback<JsonArray> {
         private final Context context;
         private final RecyclerView rv;
+        private MapboxMap mapboxMap;
 
-        public CallbackFetchingModel(Context context, RecyclerView rv) {
+        public CallbackFetchingModel(Context context, RecyclerView rv, MapboxMap mapboxMap) {
             this.context = context;
             this.rv = rv;
+            this.mapboxMap = mapboxMap;
         }
         @Override
+        @UiThread
         public void onCompleted(Exception e, JsonArray result) {
-            ArrayList<Food> foods = new ArrayList<>();
+            final ArrayList<Food> foods = new ArrayList<>();
             if(e != null){
                 Toast.makeText(mContext,R.string.notif_all_food_fail,Toast.LENGTH_LONG).show();
                 e.printStackTrace();
@@ -191,6 +311,18 @@ public class FoodSectionFragment extends Fragment implements RecyclerAdapterRefr
                 err.printStackTrace();
             }
             mAdapter = new FoodListAdapter(foods, this.context);
+            if(!foods.isEmpty()){
+                Marker m;
+                mListLinkerMarkerAndFood.clear();
+                for (Food food : foods) {
+                    String storeAndAddress = food.getStore().getName()+"\n"+food.getStore().getAddress();
+                    m = mapboxMap.addMarker( new MarkerOptions()
+                            .position( food.getStore().getLocation())
+                            .title(food.getName())
+                            .snippet(storeAndAddress));
+                    mListLinkerMarkerAndFood.put(m.getId(),food);
+                }
+            }
             this.rv.setAdapter(mAdapter);
             this.rv.getAdapter().notifyDataSetChanged();
         }

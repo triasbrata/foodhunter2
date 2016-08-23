@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.triasbrata.foodhunter.models.interfaces.ModelRecord;
 
 import java.util.Date;
 import java.text.ParseException;
@@ -15,13 +17,14 @@ import java.util.ArrayList;
 /**
  * Created by triasbrata on 03/08/16.
  */
-public class Store{
+public class Store implements ModelRecord{
     private final String TAG = getClass().getSimpleName();
     private String name, address,background,logo,city ="string";
     private int id = 0;
     private Operation operation = new Operation();
     private ArrayList<Food> food_list = new ArrayList<>();
     private JsonObject rec = new JsonObject();
+    private LatLng location = new LatLng();
 
     public Store(@Nullable  JsonObject record) {
         if(!new JsonObject().equals(record) && record != null){
@@ -33,6 +36,11 @@ public class Store{
             if(record.has("id"))setId(record.get("id").getAsInt());
             if(record.has("city"))setCity(record.get("city").getAsString());
             if(record.has("operation"))setOperation(new Operation(record.get("operation").getAsJsonObject()));
+            if(record.has("location")){
+                JsonObject loc = record.get("location").getAsJsonObject();
+                getLocation().setLatitude(loc.get("latitude").getAsDouble());
+                getLocation().setLongitude(loc.get("longitude").getAsDouble());
+            }
             if(record.has("foods")){
                 Food food;
                 Store tmp = this;
@@ -101,7 +109,7 @@ public class Store{
         return rec;
     }
 
-    private void setRec(JsonObject rec) {
+    public void setRec(JsonObject rec) {
         this.rec = rec;
     }
 
@@ -121,7 +129,15 @@ public class Store{
         this.logo = logo;
     }
 
-    public class Operation {
+    public LatLng getLocation() {
+        return location;
+    }
+
+    public void setLocation(LatLng location) {
+        this.location = location;
+    }
+
+    public class Operation implements ModelRecord {
 
         private Date open;
         private Date close;

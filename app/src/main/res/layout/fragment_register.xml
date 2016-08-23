@@ -53,12 +53,11 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/txtTownBase"
-                android:hint="@string/town_base"
+                android:id="@+id/txtNama"
+                android:hint="@string/nama_user"
                 android:background="@drawable/non_underline_text"
                 android:textColorHint="@color/textDarkHint"
-                android:textColor="@color/textDark"
-                android:inputType="textPassword" />
+                android:textColor="@color/textDark" />
         </LinearLayout>
 
         <RelativeLayout
