@@ -31,4 +31,12 @@
     <string name="notif_detail_store_fail">Toko tidak ditemukan</string>
     <string name="notif_all_food_fail">Makanan gagal di loading</string>
     <string name="notif_all_store_fail">Gagal menampilkan keseluruhan toko</string>
+    <string name="login_fail">username atau password salah silahkan coba lagi</string>
+    <string name="wellcome">Selamat Datang,</string>
+    <string name="register_fail">Registrasi gagal silahkan coba lagi</string>
+    <string name="ERROR_USERNAME_EMPTY">Username tidak boleh kosong</string>
+    <string name="ERROR_USERNAME_MIN">Username tidak boleh kurang dari 6 karakter</string>
+    <string name="ERROR_PASSWORD_EMPTY">Password tidak boleh kosong</string>
+    <string name="ERROR_EMAIL_EMPTY">Email tidak boleh kosong</string>
+    <string name="ERROR_EMAIL_FALSE">Email tidak sesuai format</string>
 </resources>

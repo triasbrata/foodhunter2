@@ -5,6 +5,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,32 +26,35 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.ImageViewBitmapInfo;
 import com.koushikdutta.ion.Ion;
+import com.mapbox.mapboxsdk.annotations.Marker;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-import com.triasbrata.foodhunter.DashboardActivity;
 import com.triasbrata.foodhunter.R;
 import com.triasbrata.foodhunter.adapters.FoodListAdapter;
 import com.triasbrata.foodhunter.adapters.StoreAdapter;
 import com.triasbrata.foodhunter.etc.Config;
+import com.triasbrata.foodhunter.etc.MapMaker;
 import com.triasbrata.foodhunter.fragment.interfaces.RecyclerAdapterRefresh;
 import com.triasbrata.foodhunter.models.Food;
 import com.triasbrata.foodhunter.models.Store;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by triasbrata on 08/07/16.
  */
-public class StoreSectionFragment extends Fragment implements RecyclerAdapterRefresh{
-    private final String TAG = "StoreSectionFragment";
-    private final ArrayList<Store> mStores = new ArrayList<Store>();
-    private StoreAdapter mAdapter = null;
-    private Context mContext = null;
+public class StoreSectionFragment extends Fragment
+        implements RecyclerAdapterRefresh,MapMaker.DataFetcher{
+    private final String TAG = "StoreSectionFragment";;
+    private RecyclerView rv;
+    private HashMap<Long, Store> mLinkerMarkerAndStore = new HashMap<>();
 
 
     public StoreSectionFragment(){}
@@ -60,33 +66,28 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(mContext == null ){
-            mContext = getContext();
-        }
         return inflater.inflate(R.layout.fragment_store,container,false);
 
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_layout);
-        rv.setLayoutManager(new LinearLayoutManager(mContext));
-        getFetchStore(rv);
+        rv = (RecyclerView) view.findViewById(R.id.rv_layout);
+        rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        new MapMaker(getChildFragmentManager(),this.getClass().getSimpleName(),this, R.id.store_header_layout)
+                .invoke();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        if(mContext == null ){
-            mContext = getContext();
-        }
         super.onCreate(savedInstanceState);
     }
-    private void getFetchStore(RecyclerView rv) {
+    private void getFetchStore(RecyclerView rv, MapboxMap mapboxMap) {
         String url = Config.URL.store_all();
-        Ion.with(mContext)
+        Ion.with(getContext())
                 .load(url)
                 .asJsonArray()
-                .setCallback(new StoreFetchCallback(rv));;
+                .setCallback(new StoreFetchCallback(rv,mapboxMap));;
     }
 
     @Override
@@ -96,10 +97,35 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
 
     public void changeViewToDetailStore(Store store) {
 
-        View v = (getView().findViewById(R.id.store_detail_header) != null)?
+        View v = getView().findViewById(R.id.store_detail_header) != null ?
                          getView().findViewById(R.id.store_detail_header):
                     getActivity().getLayoutInflater().inflate(R.layout.store_detail_header, (ViewGroup) getView().findViewById(R.id.store_header_layout));
         new HandlerStoreDetail(v,getView(),store);
+
+    }
+
+    @Override
+    public void getDataFetcher(MapboxMap mapboxMap) {
+        getFetchStore(rv,mapboxMap);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
 
     }
 
@@ -153,8 +179,8 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
         }
 
         private void changeFont() {
-            Typeface tfD = Typeface.createFromAsset(mContext.getAssets(),"font/avenir-next-lt-pro/AvenirNextLTPro-Demi.otf");
-            Typeface tfR = Typeface.createFromAsset(mContext.getAssets(),"font/avenir-next-lt-pro/AvenirNextLTPro-Regular.otf");
+            Typeface tfD = Typeface.createFromAsset(getContext().getAssets(),"font/avenir-next-lt-pro/AvenirNextLTPro-Demi.otf");
+            Typeface tfR = Typeface.createFromAsset(getContext().getAssets(),"font/avenir-next-lt-pro/AvenirNextLTPro-Regular.otf");
             mStoreName.setTypeface(tfD);
             mStoreAddress.setTypeface(tfR);
             mStoreCity.setTypeface(tfR);
@@ -202,9 +228,12 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
     }
     private class StoreFetchCallback implements FutureCallback<JsonArray> {
         private final RecyclerView rv;
+        private final MapboxMap mMapboxMap;
 
-        public StoreFetchCallback(RecyclerView rv) {
+
+        public StoreFetchCallback(RecyclerView rv, MapboxMap mapboxMap) {
             this.rv = rv;
+            mMapboxMap = mapboxMap;
         }
 
         @Override
@@ -216,9 +245,18 @@ public class StoreSectionFragment extends Fragment implements RecyclerAdapterRef
             }
             if(result.size() > 0){
                 ArrayList<Store> stores = new ArrayList<>();
+                mLinkerMarkerAndStore.clear();
                 for (JsonElement rec:result) {
                     try {
-                        stores.add(new Store((JsonObject) rec));
+                        Store store = new Store((JsonObject) rec);
+                        stores.add(store);
+                        String alamatDanOperation = store.getOperation().toString()+"\n"+store.getAddress();
+                        Marker marker = mMapboxMap.addMarker(new MarkerOptions()
+                                .position(store.getLocation())
+                                .snippet(alamatDanOperation)
+                                .title(store.getName()));
+                        mLinkerMarkerAndStore = new HashMap<>();
+                        mLinkerMarkerAndStore.put(marker.getId(),store);
                     }catch (Exception error){
                         error.printStackTrace();
                     }

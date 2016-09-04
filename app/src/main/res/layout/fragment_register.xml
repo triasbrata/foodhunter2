@@ -19,14 +19,17 @@
             android:orientation="vertical"
             android:layout_height="wrap_content">
             <EditText
+                android:textCursorDrawable="@null"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/underline_text"
                 android:textColor="@color/textDark"
                 android:id="@+id/txtUsername"
                 android:textColorHint="@color/textDarkHint"
+                android:singleLine="true"
                 android:hint="@string/username"/>
             <EditText
+                android:textCursorDrawable="@null"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtPassword"
@@ -43,18 +46,23 @@
             android:orientation="vertical"
             android:layout_height="wrap_content">
             <EditText
+                android:textCursorDrawable="@null"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/underline_text"
                 android:textColor="@color/textDark"
                 android:id="@+id/txtEmail"
+                android:singleLine="true"
+                android:inputType="textEmailAddress"
                 android:textColorHint="@color/textDarkHint"
                 android:hint="@string/email"/>
             <EditText
+                android:textCursorDrawable="@null"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtNama"
                 android:hint="@string/nama_user"
+                android:singleLine="true"
                 android:background="@drawable/non_underline_text"
                 android:textColorHint="@color/textDarkHint"
                 android:textColor="@color/textDark" />

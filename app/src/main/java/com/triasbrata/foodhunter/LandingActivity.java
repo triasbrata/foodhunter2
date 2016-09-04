@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.parse.ParseObject;
 import com.triasbrata.foodhunter.etc.CheckingGPS;
 import com.triasbrata.foodhunter.fragment.LandingFragment;
 import com.triasbrata.foodhunter.fragment.LoginFragment;
@@ -47,13 +48,13 @@ public class LandingActivity extends FragmentActivity {
         setContentView(R.layout.activity_landing);
         aLandingFragment = LandingFragment.newInstance();
         openFragment(aLandingFragment);
-        //new CheckingGPS((LocationManager) getSystemService(Context.LOCATION_SERVICE),this).invoke();
+        //new CheckingGPS((LocationManager) getSystemService(Context.LOCATION_SERVICE),this).nextRule();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //new CheckingGPS((LocationManager) getSystemService(Context.LOCATION_SERVICE),this).invoke();
+        //new CheckingGPS((LocationManager) getSystemService(Context.LOCATION_SERVICE),this).nextRule();
     }
     private void openFragment(final Fragment fragment)   {
         System.out.println(fragment.getClass());

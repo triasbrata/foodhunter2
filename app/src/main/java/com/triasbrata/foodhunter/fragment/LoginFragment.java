@@ -1,6 +1,8 @@
 package com.triasbrata.foodhunter.fragment;
 
 
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,12 +20,20 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.parse.FindCallback;
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseUser;
+import com.triasbrata.foodhunter.DashboardActivity;
 import com.triasbrata.foodhunter.LandingActivity;
 import com.triasbrata.foodhunter.R;
 import com.triasbrata.foodhunter.etc.Config;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 
 /**
@@ -88,6 +98,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         String username, password;
         username = txtUsername.getText().toString();
         password = txtPassword.getText().toString();
+
         mMakeRequestLogin(username, password);
     }
 
@@ -100,38 +111,57 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                 .cancelable(false)
                 .progress(true, 0)
                 .show();
-        JsonObject json = new JsonObject();
-        json.addProperty("username", username);
-        json.addProperty("password", password);
-        String url = Config.base_url + "login";
-        Ion.with(getContext())
-            .load(url)
-            .setJsonObjectBody(json)
-            .asJsonObject()
-            .setCallback(new FutureCallback<JsonObject>() {
-                @Override
-                public void onCompleted(Exception e, JsonObject result) {
+//        loginWithApi(username, password);
+        ParseUser.logInInBackground(username, password, new LogInCallback() {
+            @Override
+            public void done(ParseUser user, ParseException e) {
+                ((ViewGroup) md.getProgressBar().getParent()).removeView((View) md.getProgressBar());
+                if(e == null){
                     md.dismiss();
-                    if(e != null){
-                                new MaterialDialog.Builder(mActivity)
-                                .backgroundColorRes(R.color.white)
-                                .contentColorRes(R.color.textDark)
-                                .content(e.getMessage())
-                                .show();
-                        return;
-                    }
-                    if(!result.isJsonNull()){
-                        new MaterialDialog.Builder(mActivity)
-                                .backgroundColorRes(R.color.white)
-                                .contentColorRes(R.color.textDark)
-                                .content("Gagal Login")
-                                .show();
-                    }
-                    loginSuccess();
-                    
+                    getActivity().startActivity(new Intent(getActivity(),DashboardActivity.class));
+                }else{
+                    e.printStackTrace();
                 }
-            });
+                md.setContent(R.string.login_fail);
+                md.setCancelable(true);
+            }
+        });
     }
+
+//    private void loginWithApi(String username, String password) {
+//
+//        JsonObject json = new JsonObject();
+//        json.addProperty("username", username);
+//        json.addProperty("password", password);
+//        String url = Config.base_url + "login";
+//        Ion.with(getContext())
+//            .load(url)
+//            .setJsonObjectBody(json)
+//            .asJsonObject()
+//            .setCallback(new FutureCallback<JsonObject>() {
+//                @Override
+//                public void onCompleted(Exception e, JsonObject result) {
+//                    md.dismiss();
+//                    if(e != null){
+//                                new MaterialDialog.Builder(mActivity)
+//                                .backgroundColorRes(R.color.white)
+//                                .contentColorRes(R.color.textDark)
+//                                .content(e.getMessage())
+//                                .show();
+//                        return;
+//                    }
+//                    if(!result.isJsonNull()){
+//                        new MaterialDialog.Builder(mActivity)
+//                                .backgroundColorRes(R.color.white)
+//                                .contentColorRes(R.color.textDark)
+//                                .content("Gagal Login")
+//                                .show();
+//                    }
+//                    loginSuccess();
+//
+//                }
+//            });
+//    }
 
     private void loginSuccess() {
 

@@ -1,5 +1,6 @@
 package com.triasbrata.foodhunter;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
@@ -8,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -46,7 +48,7 @@ public class DashboardActivity extends FragmentActivity{
     private LinearLayout loadingLayout;
     private ArrayList<NavigationTabBar.Model> models = new ArrayList<>();
     public NavigationTabBar navigationTabBar;
-    private boolean isLogged = true;
+    private boolean isLogged = false;
     private boolean IsDetailStoreView = false;
     private ArrayList<Fragment> mFragments = new ArrayList<Fragment>();
     private Target target = new Target() {
@@ -83,6 +85,14 @@ public class DashboardActivity extends FragmentActivity{
         super.onCreate(savedInstanceState);
         MapboxAccountManager.start(this, Config.MapBoxToken);
         setContentView(R.layout.dashboard_activity);
+        if(savedInstanceState == null){
+            Intent i = getIntent();
+            if(i.getBooleanExtra(Config.TagBundle.LOGIN_NOTIFY,false)){
+                Snackbar.make(findViewById(R.id.main_container),getResources().getString(R.string.wellcome)+i.getStringExtra(Config.TagBundle.CLIENT_NAME_NOTIFY),Snackbar.LENGTH_SHORT).show();
+
+            }
+
+        }
 
         textLoading = (TextView) findViewById(R.id.text_loading);
         textLoading.setTypeface(Typeface.createFromAsset(getAssets(),"font/avenir-next-lt-pro/AvenirNextLTPro-Demi.otf"));

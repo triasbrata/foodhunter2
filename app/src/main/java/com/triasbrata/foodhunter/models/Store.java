@@ -7,7 +7,7 @@ import android.util.Log;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.triasbrata.foodhunter.models.interfaces.ModelRecord;
+import com.triasbrata.foodhunter.models.interfaces.Model;
 
 import java.util.Date;
 import java.text.ParseException;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Created by triasbrata on 03/08/16.
  */
-public class Store implements ModelRecord{
+public class Store implements Model {
     private final String TAG = getClass().getSimpleName();
     private String name, address,background,logo,city ="string";
     private int id = 0;
@@ -137,7 +137,7 @@ public class Store implements ModelRecord{
         this.location = location;
     }
 
-    public class Operation implements ModelRecord {
+    public class Operation implements Model {
 
         private Date open;
         private Date close;
@@ -159,6 +159,13 @@ public class Store implements ModelRecord{
             }
             Log.d(TAG, "Operation: success casting");
         }
+
+        @Override
+        public String toString() {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("H:m");
+            return  "Buka : "+simpleDateFormat.format(getOpen())+" - "+simpleDateFormat.format(getClose());
+        }
+
         public Operation() {
             this(null);
         }

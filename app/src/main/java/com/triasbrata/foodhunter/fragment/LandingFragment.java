@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.Button;
 
+import com.parse.ParseObject;
 import com.triasbrata.foodhunter.DashboardActivity;
 import com.triasbrata.foodhunter.LandingActivity;
 import com.triasbrata.foodhunter.R;
@@ -47,7 +48,6 @@ public class LandingFragment extends Fragment implements View.OnClickListener, A
         btnTryApp.setOnClickListener(this);
 
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
        return inflater.inflate(R.layout.fragment_landing, container, false);
@@ -63,6 +63,9 @@ public class LandingFragment extends Fragment implements View.OnClickListener, A
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btnLogInFb:
+                ParseObject testObject = new ParseObject("TestObject");
+                testObject.put("foo", "bar");
+                testObject.saveInBackground();
                 break;
             case R.id.btnTryApp:
                 btnTryAppListener();

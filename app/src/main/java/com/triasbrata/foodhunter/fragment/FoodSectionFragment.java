@@ -3,13 +3,13 @@ package com.triasbrata.foodhunter.fragment;
 import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,21 +38,22 @@ import com.triasbrata.foodhunter.R;
 import com.triasbrata.foodhunter.adapters.FoodListAdapter;
 import com.triasbrata.foodhunter.adapters.interfaces.RecycleViewItemOnClick;
 import com.triasbrata.foodhunter.etc.Config;
-import com.triasbrata.foodhunter.fragment.dialogs.DialogFoodDetailFragment;
+import com.triasbrata.foodhunter.fragment.dialogs.DialogDetailFoodFragment;
 import com.triasbrata.foodhunter.fragment.inner.MapBoxFragment;
 import com.triasbrata.foodhunter.fragment.interfaces.RecyclerAdapterRefresh;
 import com.triasbrata.foodhunter.models.Food;
 import com.triasbrata.foodhunter.models.Store;
-
+import com.triasbrata.foodhunter.etc.MapMaker;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 
 /**
  * Created by triasbrata on 08/07/16.
  */
 public class FoodSectionFragment extends Fragment implements
         RecyclerAdapterRefresh,
-        LocationListener {
+        MapMaker.DataFetcher {
     private final String TAG = "FoodSectionFragment";
     private FoodListAdapter mAdapter = null;
     protected final RecycleViewItemOnClick viewListener = new CardView(), btnBrowseListener = new BtnBrowser(), btnLikeListener = new BtnLike();
@@ -60,9 +61,9 @@ public class FoodSectionFragment extends Fragment implements
     protected SupportMapFragment mapFragment;
     private  LocationManager gpsService;
     private String gpsProvider;
-    protected MapboxMap mMapBoxMap;
     private HashMap<Long, Food> mListLinkerMarkerAndFood = new HashMap<>();
     private LatLng userLocaltion;
+    private RecyclerView rv;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,11 +83,23 @@ public class FoodSectionFragment extends Fragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         gpsService = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        gpsProvider = gpsService.getBestProvider(new Criteria(), false);
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_layout);
+        gpsProvider = gpsService.getBestProvider(new Criteria(), true);
+        rv = (RecyclerView) view.findViewById(R.id.rv_layout);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
-        makeMap(savedInstanceState,rv);
-//        new CheckingGPS((LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE),getActivity()).invoke();
+        String tagMap = this.getClass().getSimpleName();
+
+        new MapMaker(getChildFragmentManager(),tagMap,this,gpsService,gpsProvider, R.id.map_view)
+                .setmMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(@NonNull Marker marker) {
+                        Food food = mListLinkerMarkerAndFood.get(marker.getId());
+                        DialogDetailFoodFragment f =  DialogDetailFoodFragment.newInstance(food.getRec().toString());
+                        f.show(((FragmentActivity) mContext).getSupportFragmentManager(),"com.triasbrata.foodhunter.DialogDetailFoodFragment");
+                        return false;
+                    }
+                })
+                .invoke();
+//        new CheckingGPS((LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE),getActivity()).nextRule();
     }
 
     @Override
@@ -137,7 +150,7 @@ public class FoodSectionFragment extends Fragment implements
                     public boolean onMarkerClick(@NonNull Marker marker) {
                         Log.d(TAG, "onMarkerClick: called");
                         Food food = mListLinkerMarkerAndFood.get(marker.getId());
-                        DialogFoodDetailFragment f =  DialogFoodDetailFragment.newInstance(food.getRec().toString());
+                        DialogDetailFoodFragment f =  DialogDetailFoodFragment.newInstance(food.getRec().toString());
                         f.show(((DashboardActivity) mContext).getSupportFragmentManager(),"");
                         return false;
                     }
@@ -158,7 +171,7 @@ public class FoodSectionFragment extends Fragment implements
         String url = Config.URL.food_all();
         FutureCallback<JsonArray> f = new CallbackFetchingModel(context,rv, mapboxMap);
         Log.d(TAG, "getFetchFoodModel: "+url);
-        Ion.with(mContext)
+        Ion.with(context)
                 .load(url)
                 .asJsonArray()
                 .setCallback(f);
@@ -195,6 +208,11 @@ public class FoodSectionFragment extends Fragment implements
     public void onProviderDisabled(String provider) {
         Log.d(TAG, "onProviderDisabled: "+provider);
         new MaterialDialog.Builder(getActivity()).content("GPS Aktif dengan" + provider).show();
+    }
+
+    @Override
+    public void getDataFetcher(MapboxMap mapboxMap) {
+        getFetchFoodModel(getContext(),rv,mapboxMap);
     }
 
     private class BtnLike implements RecycleViewItemOnClick {
@@ -261,7 +279,7 @@ public class FoodSectionFragment extends Fragment implements
                     Toast.makeText(mContext, "Makanan tidak ditemukan", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                DialogFoodDetailFragment f =  DialogFoodDetailFragment.newInstance(result.toString());
+                DialogDetailFoodFragment f =  DialogDetailFoodFragment.newInstance(result.toString());
                 f.show(((DashboardActivity) mContext).getSupportFragmentManager(),"");
             }
         };

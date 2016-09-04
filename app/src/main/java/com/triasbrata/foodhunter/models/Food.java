@@ -4,12 +4,11 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.triasbrata.foodhunter.adapters.interfaces.RecycleViewItemOnClick;
-import com.triasbrata.foodhunter.models.interfaces.ModelRecord;
+import com.triasbrata.foodhunter.models.interfaces.Model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.List;
 /**
  * Created by triasbrata on 09/07/16.
  */
-public class Food implements ModelRecord {
+public class Food implements Model {
     private String TAG = getClass().getSimpleName();
 
     private String name;
@@ -138,7 +137,7 @@ public class Food implements ModelRecord {
     }
 
 
-    public class Image implements ModelRecord {
+    public class Image implements Model {
         private JsonObject rec = new JsonObject();
         private String preview;
         private List<String> slide = new ArrayList<>();

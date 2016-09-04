@@ -10,15 +10,19 @@ public class Config {
     public static String MapBoxToken = "pk.eyJ1IjoidHJpYXNicmF0YSIsImEiOiJjaXJyd3BibDEwaW5jZjltNjY1bXJlZWI0In0.GJzKf95eJsmvLMDn_NnFfA";
 
     public static class TagBundle{
+        public static final String TAG = "com.triasbrata.foodhunter.";
+        public static final String LOGIN_NOTIFY = TAG+"LOGIN_NOTIFY";
+        public static final String CLIENT_NAME_NOTIFY = TAG+"CLIENT_NAME_NOTIFY";
         public static String Tag = TagBundle.class.getSimpleName();
         public static String storeModel = Tag+"STORE_MODEL";
     }
 
     public static class URL {
         private static final String TAG = Config.URL.class.getSimpleName();
-        private static String host =  "http://192.168.42.50";
+
 //        private static String host =  "http://10.0.2.2";
 //        private static String host =  "https://foodhunter-triasbrata.herokuapp.com";
+        private static String host =  "http://192.168.42.233";
         private static String hostLocal =  "http://localhost";
         private static String port =  "3000";
         private static boolean usePort = true;
@@ -64,5 +68,14 @@ public class Config {
         public static String register() {
             return makeUrl(register);
         }
+    }
+
+    public static class Parse {
+
+        public static String AppsId = "foodhunter123as123mk123jl";
+        private static String Host = "localhost";
+        private static String Port = "1337";
+        public static String Url = "http://"+Host+":"+Port+"/parse";
+        public static String clientKey = "message34lioysd;.n43oi412";
     }
 }

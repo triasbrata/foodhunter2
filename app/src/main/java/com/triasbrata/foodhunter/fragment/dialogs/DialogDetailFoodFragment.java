@@ -35,7 +35,7 @@ import com.triasbrata.foodhunter.models.Store;
 /**
  * Created by triasbrata on 11/07/16.
  */
-public class DialogFoodDetailFragment extends DialogFragment{
+public class DialogDetailFoodFragment extends DialogFragment{
     private static final String TAG_MODEL = "mModel";
     private SliderLayout mDemoSlider;
     private LinearLayout mCloseBtn,mNavigateBtn,mLikeBtn,mBrowseBtn;
@@ -99,7 +99,7 @@ public class DialogFoodDetailFragment extends DialogFragment{
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: btn Close");
-                DialogFoodDetailFragment.this.dismiss();
+                DialogDetailFoodFragment.this.dismiss();
             }
         });
         mLikeBtn.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +118,7 @@ public class DialogFoodDetailFragment extends DialogFragment{
         mBrowseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFoodDetailFragment.this.dismiss();
+                DialogDetailFoodFragment.this.dismiss();
                 Log.d(TAG, "onClick: "+Config.URL.store_detail(String.valueOf(mModel.getStore().getId())));
                 Ion.with(getContext())
                     .load(Config.URL.store_detail(String.valueOf(mModel.getStore().getId())))
@@ -169,16 +169,16 @@ public class DialogFoodDetailFragment extends DialogFragment{
         super.onAttach(context);
     }
 
-    public DialogFoodDetailFragment() {
+    public DialogDetailFoodFragment() {
     }
 
-    public static DialogFoodDetailFragment newInstance() {
-        return  new DialogFoodDetailFragment();
+    public static DialogDetailFoodFragment newInstance() {
+        return  new DialogDetailFoodFragment();
 
     }
 
-    public static DialogFoodDetailFragment newInstance(String model) {
-     DialogFoodDetailFragment f = new DialogFoodDetailFragment();
+    public static DialogDetailFoodFragment newInstance(String model) {
+     DialogDetailFoodFragment f = new DialogDetailFoodFragment();
      Bundle args = new Bundle();
      args.putString(TAG_MODEL,model);
      f.setArguments(args);
