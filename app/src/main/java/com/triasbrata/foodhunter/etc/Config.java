@@ -22,7 +22,7 @@ public class Config {
 
 //        private static String host =  "http://10.0.2.2";
 //        private static String host =  "https://foodhunter-triasbrata.herokuapp.com";
-        private static String host =  "http://192.168.42.233";
+        private static String host =  "http://192.168.43.37";
         private static String hostLocal =  "http://localhost";
         private static String port =  "3000";
         private static boolean usePort = true;
